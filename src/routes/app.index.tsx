@@ -49,6 +49,11 @@ function CitizenHome() {
   return (
     <div className="space-y-6">
       <header className="flex items-center gap-3">
+        <img
+          src={logoAsset.url}
+          alt="Nagar Mitra logo"
+          className="h-11 w-11 shrink-0 rounded-xl object-contain"
+        />
         <div className="min-w-0 flex-1">
           <p className="text-sm text-muted-foreground">{t(greetingKey())}</p>
           <h1 className="truncate font-display text-2xl font-bold">
