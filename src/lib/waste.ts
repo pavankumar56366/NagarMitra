@@ -29,6 +29,7 @@ export const STATUS_LABEL: Record<ComplaintStatus, string> = {
   closed: "Closed",
   escalated: "Escalated",
   reopened: "Reopened",
+  cancelled: "Cancelled",
 };
 
 export const STATUS_ORDER: ComplaintStatus[] = [
