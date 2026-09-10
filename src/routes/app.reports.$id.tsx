@@ -40,12 +40,48 @@ function ReportDetail() {
   const { data: workers = [] } = useQuery(workersQuery);
   const { data: photo } = useQuery(photoUrlQuery(complaint?.photo_url ?? null));
 
+  const navigate = useNavigate();
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const worker = workers.find((w) => w.id === complaint?.assigned_worker_id) ?? null;
+  const isCancelled = Boolean(complaint?.deleted_at) || complaint?.status === "cancelled";
   const canVerify =
-    complaint && complaint.status === "resolved" && complaint.verification_status !== "confirmed";
+    complaint &&
+    !isCancelled &&
+    complaint.status === "resolved" &&
+    complaint.verification_status !== "confirmed";
+  const mode = complaint
+    ? deletionMode(complaint.status, complaint.deleted_at ?? null)
+    : ("none" as const);
+
+  async function removeReport() {
+    if (!complaint) return;
+    setDeleting(true);
+    try {
+      const result = await deleteCitizenReport({
+        data: { complaintId: complaint.id, reason: note.trim() || undefined },
+      });
+      toast.success(
+        result.outcome === "deleted"
+          ? "Report deleted successfully."
+          : "Report withdrawn successfully.",
+      );
+      await queryClient.invalidateQueries({ queryKey: ["my_complaints"] });
+      await queryClient.invalidateQueries({ queryKey: ["complaint_events", complaint.id] });
+      if (result.outcome === "deleted") {
+        void navigate({ to: "/app/reports" });
+        return;
+      }
+      setConfirmDelete(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not delete the report");
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   async function verify(confirmed: boolean) {
     if (!complaint) return;
