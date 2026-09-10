@@ -49,6 +49,9 @@ export type Complaint = {
   ai_label: string | null;
   captured_at: string | null;
   description: string | null;
+  deleted_at?: string | null;
+  deleted_by?: string | null;
+  deletion_reason?: string | null;
 };
 
 
