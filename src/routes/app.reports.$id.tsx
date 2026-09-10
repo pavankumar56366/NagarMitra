@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { verifyCitizenCleanup } from "@/lib/citizen-verification.functions";
 import { deleteCitizenReport, deletionMode } from "@/lib/citizen-delete.functions";
 import { myComplaintsQuery, photoUrlQuery } from "@/lib/citizen";
-import { complaintEventsQuery, workersQuery } from "@/lib/queries";
+import { complaintEventsQuery, completionEvidenceQuery, workersQuery } from "@/lib/queries";
+import { LocationFacts, ReportQualityPanel } from "@/components/report-quality-panel";
 import { StatusBadge, PriorityBadge } from "@/components/status-badge";
 import { SlaChip } from "@/components/sla-chip";
 import { CATEGORY_LABEL, formatDateTime } from "@/lib/waste";
@@ -39,6 +40,7 @@ function ReportDetail() {
   const { data: events = [] } = useQuery(complaintEventsQuery(id));
   const { data: workers = [] } = useQuery(workersQuery);
   const { data: photo } = useQuery(photoUrlQuery(complaint?.photo_url ?? null));
+  const { data: evidence = [] } = useQuery(completionEvidenceQuery(id));
 
   const navigate = useNavigate();
   const [note, setNote] = useState("");
@@ -155,6 +157,37 @@ function ReportDetail() {
         )}
         {complaint.description && <p className="pt-1">{complaint.description}</p>}
       </div>
+
+      <LocationFacts
+        title="Location"
+        locationName={complaint.location_name || complaint.address || ""}
+        lat={complaint.lat}
+        lng={complaint.lng}
+        gpsVerified={complaint.report_quality?.gps_verified ?? null}
+        timestampVerified={complaint.report_quality?.timestamp_verified ?? null}
+        timestamp={complaint.captured_at || complaint.created_at}
+      />
+
+      <ReportQualityPanel
+        quality={complaint.report_quality}
+        score={complaint.report_quality_score}
+      />
+
+      {evidence.length > 0 && (
+        <div className="card-surface space-y-2 p-5 text-sm">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            Cleanup evidence
+          </h2>
+          {evidence
+            .filter((ev) => ev.gps_verified)
+            .map((ev) => (
+              <p key={ev.id}>
+                Cleared on {formatDateTime(ev.captured_at)} at {ev.location_name}, confirmed{" "}
+                {ev.distance_from_reported_location} m from where you reported it.
+              </p>
+            ))}
+        </div>
+      )}
 
       {canVerify && (
         <div className="card-surface space-y-3 p-5">
