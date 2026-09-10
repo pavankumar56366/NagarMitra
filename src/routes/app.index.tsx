@@ -6,6 +6,7 @@ import { avatarUrlQuery, myAccessQuery } from "@/lib/queries";
 import { StatusBadge } from "@/components/status-badge";
 import { isOpen, relativeTime } from "@/lib/waste";
 import { useI18n } from "@/lib/i18n";
+import logoAsset from "@/assets/nagarmitra-logo.jpg.asset.json";
 
 export const Route = createFileRoute("/app/")({
   head: () => ({
