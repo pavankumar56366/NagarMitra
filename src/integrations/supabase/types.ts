@@ -563,10 +563,6 @@ export type Database = {
     }
     Functions: {
       can_view_zone: { Args: { _zone_id: string }; Returns: boolean }
-      citizen_delete_report: {
-        Args: { _complaint_id: string; _reason?: string }
-        Returns: string
-      }
       citizen_verify: {
         Args: { _comment?: string; _complaint_id: string; _confirmed: boolean }
         Returns: undefined

@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.citizen_delete_report(uuid, text);
