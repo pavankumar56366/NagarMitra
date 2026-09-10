@@ -50,8 +50,11 @@ function ZonesPage() {
                 <div>
                   <h2 className="font-display text-lg font-semibold">{z.name}</h2>
                   <p className="text-xs text-muted-foreground">
-                    Supervisor: {z.supervisor_name}
+                    Ward member: {z.ward_member_name || z.supervisor_name || "—"}
                   </p>
+                  {z.locations ? (
+                    <p className="mt-1 text-xs text-muted-foreground">{z.locations}</p>
+                  ) : null}
                 </div>
                 <span className="rounded-full bg-accent px-3 py-1 text-xs font-semibold">
                   {crew.length} workers

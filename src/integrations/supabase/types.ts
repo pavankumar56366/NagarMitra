@@ -689,27 +689,36 @@ export type Database = {
           center_lng: number
           created_at: string
           id: string
+          locations: string
           name: string
           sensitivity_tags: string[]
           supervisor_name: string
+          ward_member_name: string
+          ward_number: number | null
         }
         Insert: {
           center_lat?: number
           center_lng?: number
           created_at?: string
           id?: string
+          locations?: string
           name: string
           sensitivity_tags?: string[]
           supervisor_name?: string
+          ward_member_name?: string
+          ward_number?: number | null
         }
         Update: {
           center_lat?: number
           center_lng?: number
           created_at?: string
           id?: string
+          locations?: string
           name?: string
           sensitivity_tags?: string[]
           supervisor_name?: string
+          ward_member_name?: string
+          ward_number?: number | null
         }
         Relationships: []
       }
