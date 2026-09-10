@@ -38,6 +38,8 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [existingEmail, setExistingEmail] = useState<string | null>(null);
+
 
   const routeByRole = useCallback(
     async (userId: string) => {
