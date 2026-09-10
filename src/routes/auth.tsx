@@ -38,6 +38,8 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [existingEmail, setExistingEmail] = useState<string | null>(null);
+
 
   const routeByRole = useCallback(
     async (userId: string) => {
@@ -53,7 +55,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) void routeByRole(data.session.user.id);
+      if (data.session) setExistingEmail(data.session.user.email ?? "your account");
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) void routeByRole(session.user.id);
@@ -61,10 +63,28 @@ function AuthPage() {
     return () => sub.subscription.unsubscribe();
   }, [routeByRole]);
 
+  async function continueSession() {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) void routeByRole(data.session.user.id);
+    else setExistingEmail(null);
+  }
+
+  async function switchAccount() {
+    await supabase.auth.signOut();
+    setExistingEmail(null);
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     try {
+      // Never sign in on top of a stale session — it can route to the previous
+      // account's dashboard.
+      const { data: current } = await supabase.auth.getSession();
+      if (current.session && current.session.user.email !== email) {
+        await supabase.auth.signOut();
+        setExistingEmail(null);
+      }
       if (persona === "citizen" && mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -90,6 +110,7 @@ function AuthPage() {
       setBusy(false);
     }
   }
+
 
   async function google() {
     const result = await lovable.auth.signInWithOAuth("google", {
@@ -119,6 +140,28 @@ function AuthPage() {
               : "Your city partner for clean streets"}
           </p>
         </div>
+
+        {existingEmail ? (
+          <div className="card-surface mb-4 p-4">
+            <p className="text-sm">
+              You are already signed in as <span className="font-semibold">{existingEmail}</span>.
+            </p>
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={continueSession}
+                className="h-10 flex-1 rounded-xl bg-primary text-sm font-semibold text-primary-foreground"
+              >
+                Continue
+              </button>
+              <button
+                onClick={switchAccount}
+                className="h-10 flex-1 rounded-xl border border-border text-sm font-semibold hover:bg-accent"
+              >
+                Use another account
+              </button>
+            </div>
+          </div>
+        ) : null}
 
         {persona === null ? (
           <div className="card-surface animate-in fade-in slide-in-from-bottom-2 p-6 duration-300">
