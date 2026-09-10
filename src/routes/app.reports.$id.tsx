@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, MapPin } from "lucide-react";
+import { ArrowLeft, MapPin, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { verifyCitizenCleanup } from "@/lib/citizen-verification.functions";
+import { deleteCitizenReport, deletionMode } from "@/lib/citizen-delete.functions";
 import { myComplaintsQuery, photoUrlQuery } from "@/lib/citizen";
 import { complaintEventsQuery, workersQuery } from "@/lib/queries";
 import { StatusBadge, PriorityBadge } from "@/components/status-badge";
