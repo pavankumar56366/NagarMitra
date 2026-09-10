@@ -3,6 +3,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { HardHat, Leaf, Trash2, ArrowLeft, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { lovable } from "@/integrations/lovable/index";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +41,7 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
   const [existingEmail, setExistingEmail] = useState<string | null>(null);
+  const { t } = useI18n();
 
 
   const routeByRole = useCallback(
@@ -129,35 +132,37 @@ function AuthPage() {
       )}
     >
       <div className="w-full max-w-[420px]">
+        <div className="mb-4 flex justify-end">
+          <LanguageSwitcher />
+        </div>
         <div className="mb-8 flex flex-col items-center text-center">
           <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg">
             {isWorker ? <HardHat className="h-7 w-7" /> : <Trash2 className="h-7 w-7" />}
           </span>
           <h1 className="mt-4 font-display text-3xl font-bold tracking-tight">NagarMitra</h1>
           <p className="text-sm text-muted-foreground">
-            {isWorker
-              ? "Field crew sign-in"
-              : "Your city partner for clean streets"}
+            {isWorker ? t("auth.worker.tagline") : t("app.tagline")}
           </p>
         </div>
 
         {existingEmail ? (
           <div className="card-surface mb-4 p-4">
             <p className="text-sm">
-              You are already signed in as <span className="font-semibold">{existingEmail}</span>.
+              {t("auth.session.signedInAs")}{" "}
+              <span className="font-semibold">{existingEmail}</span>.
             </p>
             <div className="mt-3 flex gap-2">
               <button
                 onClick={continueSession}
                 className="h-10 flex-1 rounded-xl bg-primary text-sm font-semibold text-primary-foreground"
               >
-                Continue
+                {t("auth.session.continue")}
               </button>
               <button
                 onClick={switchAccount}
                 className="h-10 flex-1 rounded-xl border border-border text-sm font-semibold hover:bg-accent"
               >
-                Use another account
+                {t("auth.session.switch")}
               </button>
             </div>
           </div>
@@ -165,9 +170,9 @@ function AuthPage() {
 
         {persona === null ? (
           <div className="card-surface animate-in fade-in slide-in-from-bottom-2 p-6 duration-300">
-            <h2 className="font-display text-lg font-semibold">How are you using NagarMitra?</h2>
+            <h2 className="font-display text-lg font-semibold">{t("auth.persona.title")}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Pick one to continue. You can switch later by signing out.
+              {t("auth.persona.help")}
             </p>
 
             <div className="mt-5 space-y-3">
@@ -182,9 +187,9 @@ function AuthPage() {
                   <Leaf className="h-5 w-5" />
                 </span>
                 <span className="flex-1">
-                  <span className="block font-semibold">I am a resident</span>
+                  <span className="block font-semibold">{t("auth.persona.citizen")}</span>
                   <span className="block text-sm text-muted-foreground">
-                    Report waste and track it until it is cleared
+                    {t("auth.persona.citizen.help")}
                   </span>
                 </span>
               </button>
@@ -200,7 +205,7 @@ function AuthPage() {
                   <HardHat className="h-5 w-5" />
                 </span>
                 <span className="flex-1">
-                  <span className="block font-semibold">I am a field worker</span>
+                  <span className="block font-semibold">{t("auth.persona.worker")}</span>
                   <span className="block text-sm text-muted-foreground">
                     Sign in with the credentials your ward office gave you
                   </span>
