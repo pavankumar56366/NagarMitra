@@ -10,33 +10,323 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as StaffRouteImport } from './routes/staff'
+import { Route as AuthenticatedEscalationsRouteImport } from './routes/_authenticated/escalations'
+import { Route as AuthenticatedMapRouteImport } from './routes/_authenticated/map'
+import { Route as AuthenticatedOverviewRouteImport } from './routes/_authenticated/overview'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedWorkersRouteImport } from './routes/_authenticated/workers'
+import { Route as AuthenticatedZonesRouteImport } from './routes/_authenticated/zones'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppReportRouteImport } from './routes/app.report'
+import { Route as AppSegregateRouteImport } from './routes/app.segregate'
+import { Route as StaffIndexRouteImport } from './routes/staff.index'
+import { Route as StaffDashboardRouteImport } from './routes/staff.dashboard'
+import { Route as StaffProfileRouteImport } from './routes/staff.profile'
+import { Route as AuthenticatedComplaintsIndexRouteImport } from './routes/_authenticated/complaints.index'
+import { Route as AuthenticatedComplaintsIdRouteImport } from './routes/_authenticated/complaints.$id'
+import { Route as AppReportsIndexRouteImport } from './routes/app.reports.index'
+import { Route as AppReportsIdRouteImport } from './routes/app.reports.$id'
+import { Route as StaffReportsIndexRouteImport } from './routes/staff.reports.index'
+import { Route as StaffReportsIdRouteImport } from './routes/staff.reports.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StaffRoute = StaffRouteImport.update({
+  id: '/staff',
+  path: '/staff',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedEscalationsRoute =
+  AuthenticatedEscalationsRouteImport.update({
+    id: '/escalations',
+    path: '/escalations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMapRoute = AuthenticatedMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOverviewRoute = AuthenticatedOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedWorkersRoute = AuthenticatedWorkersRouteImport.update({
+  id: '/workers',
+  path: '/workers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedZonesRoute = AuthenticatedZonesRouteImport.update({
+  id: '/zones',
+  path: '/zones',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportRoute = AppReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSegregateRoute = AppSegregateRouteImport.update({
+  id: '/segregate',
+  path: '/segregate',
+  getParentRoute: () => AppRoute,
+} as any)
+const StaffIndexRoute = StaffIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffDashboardRoute = StaffDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffProfileRoute = StaffProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => StaffRoute,
+} as any)
+const AuthenticatedComplaintsIndexRoute =
+  AuthenticatedComplaintsIndexRouteImport.update({
+    id: '/complaints/',
+    path: '/complaints/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedComplaintsIdRoute =
+  AuthenticatedComplaintsIdRouteImport.update({
+    id: '/complaints/$id',
+    path: '/complaints/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
+  id: '/reports/',
+  path: '/reports/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportsIdRoute = AppReportsIdRouteImport.update({
+  id: '/reports/$id',
+  path: '/reports/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const StaffReportsIndexRoute = StaffReportsIndexRouteImport.update({
+  id: '/reports/',
+  path: '/reports/',
+  getParentRoute: () => StaffRoute,
+} as any)
+const StaffReportsIdRoute = StaffReportsIdRouteImport.update({
+  id: '/reports/$id',
+  path: '/reports/$id',
+  getParentRoute: () => StaffRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/staff': typeof StaffRouteWithChildren
+  '/escalations': typeof AuthenticatedEscalationsRoute
+  '/map': typeof AuthenticatedMapRoute
+  '/overview': typeof AuthenticatedOverviewRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/workers': typeof AuthenticatedWorkersRoute
+  '/zones': typeof AuthenticatedZonesRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/report': typeof AppReportRoute
+  '/app/segregate': typeof AppSegregateRoute
+  '/staff/dashboard': typeof StaffDashboardRoute
+  '/staff/profile': typeof StaffProfileRoute
+  '/app/': typeof AppIndexRoute
+  '/staff/': typeof StaffIndexRoute
+  '/complaints/$id': typeof AuthenticatedComplaintsIdRoute
+  '/app/reports/$id': typeof AppReportsIdRoute
+  '/staff/reports/$id': typeof StaffReportsIdRoute
+  '/complaints/': typeof AuthenticatedComplaintsIndexRoute
+  '/app/reports/': typeof AppReportsIndexRoute
+  '/staff/reports/': typeof StaffReportsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/escalations': typeof AuthenticatedEscalationsRoute
+  '/map': typeof AuthenticatedMapRoute
+  '/overview': typeof AuthenticatedOverviewRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/workers': typeof AuthenticatedWorkersRoute
+  '/zones': typeof AuthenticatedZonesRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/report': typeof AppReportRoute
+  '/app/segregate': typeof AppSegregateRoute
+  '/staff/dashboard': typeof StaffDashboardRoute
+  '/staff/profile': typeof StaffProfileRoute
+  '/app': typeof AppIndexRoute
+  '/staff': typeof StaffIndexRoute
+  '/complaints/$id': typeof AuthenticatedComplaintsIdRoute
+  '/app/reports/$id': typeof AppReportsIdRoute
+  '/staff/reports/$id': typeof StaffReportsIdRoute
+  '/complaints': typeof AuthenticatedComplaintsIndexRoute
+  '/app/reports': typeof AppReportsIndexRoute
+  '/staff/reports': typeof StaffReportsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/staff': typeof StaffRouteWithChildren
+  '/_authenticated/escalations': typeof AuthenticatedEscalationsRoute
+  '/_authenticated/map': typeof AuthenticatedMapRoute
+  '/_authenticated/overview': typeof AuthenticatedOverviewRoute
+  '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/workers': typeof AuthenticatedWorkersRoute
+  '/_authenticated/zones': typeof AuthenticatedZonesRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/report': typeof AppReportRoute
+  '/app/segregate': typeof AppSegregateRoute
+  '/staff/dashboard': typeof StaffDashboardRoute
+  '/staff/profile': typeof StaffProfileRoute
+  '/app/': typeof AppIndexRoute
+  '/staff/': typeof StaffIndexRoute
+  '/_authenticated/complaints/$id': typeof AuthenticatedComplaintsIdRoute
+  '/app/reports/$id': typeof AppReportsIdRoute
+  '/staff/reports/$id': typeof StaffReportsIdRoute
+  '/_authenticated/complaints/': typeof AuthenticatedComplaintsIndexRoute
+  '/app/reports/': typeof AppReportsIndexRoute
+  '/staff/reports/': typeof StaffReportsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/auth'
+    | '/staff'
+    | '/escalations'
+    | '/map'
+    | '/overview'
+    | '/reports'
+    | '/settings'
+    | '/workers'
+    | '/zones'
+    | '/app/profile'
+    | '/app/report'
+    | '/app/segregate'
+    | '/staff/dashboard'
+    | '/staff/profile'
+    | '/app/'
+    | '/staff/'
+    | '/complaints/$id'
+    | '/app/reports/$id'
+    | '/staff/reports/$id'
+    | '/complaints/'
+    | '/app/reports/'
+    | '/staff/reports/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/escalations'
+    | '/map'
+    | '/overview'
+    | '/reports'
+    | '/settings'
+    | '/workers'
+    | '/zones'
+    | '/app/profile'
+    | '/app/report'
+    | '/app/segregate'
+    | '/staff/dashboard'
+    | '/staff/profile'
+    | '/app'
+    | '/staff'
+    | '/complaints/$id'
+    | '/app/reports/$id'
+    | '/staff/reports/$id'
+    | '/complaints'
+    | '/app/reports'
+    | '/staff/reports'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/app'
+    | '/auth'
+    | '/staff'
+    | '/_authenticated/escalations'
+    | '/_authenticated/map'
+    | '/_authenticated/overview'
+    | '/_authenticated/reports'
+    | '/_authenticated/settings'
+    | '/_authenticated/workers'
+    | '/_authenticated/zones'
+    | '/app/profile'
+    | '/app/report'
+    | '/app/segregate'
+    | '/staff/dashboard'
+    | '/staff/profile'
+    | '/app/'
+    | '/staff/'
+    | '/_authenticated/complaints/$id'
+    | '/app/reports/$id'
+    | '/staff/reports/$id'
+    | '/_authenticated/complaints/'
+    | '/app/reports/'
+    | '/staff/reports/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  StaffRoute: typeof StaffRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +338,248 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/staff': {
+      id: '/staff'
+      path: '/staff'
+      fullPath: '/staff'
+      preLoaderRoute: typeof StaffRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/escalations': {
+      id: '/_authenticated/escalations'
+      path: '/escalations'
+      fullPath: '/escalations'
+      preLoaderRoute: typeof AuthenticatedEscalationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/map': {
+      id: '/_authenticated/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof AuthenticatedMapRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/overview': {
+      id: '/_authenticated/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof AuthenticatedOverviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/workers': {
+      id: '/_authenticated/workers'
+      path: '/workers'
+      fullPath: '/workers'
+      preLoaderRoute: typeof AuthenticatedWorkersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/zones': {
+      id: '/_authenticated/zones'
+      path: '/zones'
+      fullPath: '/zones'
+      preLoaderRoute: typeof AuthenticatedZonesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/report': {
+      id: '/app/report'
+      path: '/report'
+      fullPath: '/app/report'
+      preLoaderRoute: typeof AppReportRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/segregate': {
+      id: '/app/segregate'
+      path: '/segregate'
+      fullPath: '/app/segregate'
+      preLoaderRoute: typeof AppSegregateRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/staff/': {
+      id: '/staff/'
+      path: '/'
+      fullPath: '/staff/'
+      preLoaderRoute: typeof StaffIndexRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/dashboard': {
+      id: '/staff/dashboard'
+      path: '/dashboard'
+      fullPath: '/staff/dashboard'
+      preLoaderRoute: typeof StaffDashboardRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/profile': {
+      id: '/staff/profile'
+      path: '/profile'
+      fullPath: '/staff/profile'
+      preLoaderRoute: typeof StaffProfileRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/_authenticated/complaints/': {
+      id: '/_authenticated/complaints/'
+      path: '/complaints'
+      fullPath: '/complaints/'
+      preLoaderRoute: typeof AuthenticatedComplaintsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/complaints/$id': {
+      id: '/_authenticated/complaints/$id'
+      path: '/complaints/$id'
+      fullPath: '/complaints/$id'
+      preLoaderRoute: typeof AuthenticatedComplaintsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/app/reports/': {
+      id: '/app/reports/'
+      path: '/reports'
+      fullPath: '/app/reports/'
+      preLoaderRoute: typeof AppReportsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/reports/$id': {
+      id: '/app/reports/$id'
+      path: '/reports/$id'
+      fullPath: '/app/reports/$id'
+      preLoaderRoute: typeof AppReportsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/staff/reports/': {
+      id: '/staff/reports/'
+      path: '/reports'
+      fullPath: '/staff/reports/'
+      preLoaderRoute: typeof StaffReportsIndexRouteImport
+      parentRoute: typeof StaffRoute
+    }
+    '/staff/reports/$id': {
+      id: '/staff/reports/$id'
+      path: '/reports/$id'
+      fullPath: '/staff/reports/$id'
+      preLoaderRoute: typeof StaffReportsIdRouteImport
+      parentRoute: typeof StaffRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedEscalationsRoute: typeof AuthenticatedEscalationsRoute
+  AuthenticatedMapRoute: typeof AuthenticatedMapRoute
+  AuthenticatedOverviewRoute: typeof AuthenticatedOverviewRoute
+  AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedWorkersRoute: typeof AuthenticatedWorkersRoute
+  AuthenticatedZonesRoute: typeof AuthenticatedZonesRoute
+  AuthenticatedComplaintsIdRoute: typeof AuthenticatedComplaintsIdRoute
+  AuthenticatedComplaintsIndexRoute: typeof AuthenticatedComplaintsIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedEscalationsRoute: AuthenticatedEscalationsRoute,
+  AuthenticatedMapRoute: AuthenticatedMapRoute,
+  AuthenticatedOverviewRoute: AuthenticatedOverviewRoute,
+  AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedWorkersRoute: AuthenticatedWorkersRoute,
+  AuthenticatedZonesRoute: AuthenticatedZonesRoute,
+  AuthenticatedComplaintsIdRoute: AuthenticatedComplaintsIdRoute,
+  AuthenticatedComplaintsIndexRoute: AuthenticatedComplaintsIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface AppRouteChildren {
+  AppProfileRoute: typeof AppProfileRoute
+  AppReportRoute: typeof AppReportRoute
+  AppSegregateRoute: typeof AppSegregateRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppReportsIdRoute: typeof AppReportsIdRoute
+  AppReportsIndexRoute: typeof AppReportsIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppProfileRoute: AppProfileRoute,
+  AppReportRoute: AppReportRoute,
+  AppSegregateRoute: AppSegregateRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppReportsIdRoute: AppReportsIdRoute,
+  AppReportsIndexRoute: AppReportsIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+interface StaffRouteChildren {
+  StaffDashboardRoute: typeof StaffDashboardRoute
+  StaffProfileRoute: typeof StaffProfileRoute
+  StaffIndexRoute: typeof StaffIndexRoute
+  StaffReportsIdRoute: typeof StaffReportsIdRoute
+  StaffReportsIndexRoute: typeof StaffReportsIndexRoute
+}
+
+const StaffRouteChildren: StaffRouteChildren = {
+  StaffDashboardRoute: StaffDashboardRoute,
+  StaffProfileRoute: StaffProfileRoute,
+  StaffIndexRoute: StaffIndexRoute,
+  StaffReportsIdRoute: StaffReportsIdRoute,
+  StaffReportsIndexRoute: StaffReportsIndexRoute,
+}
+
+const StaffRouteWithChildren = StaffRoute._addFileChildren(StaffRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
+  AuthRoute: AuthRoute,
+  StaffRoute: StaffRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

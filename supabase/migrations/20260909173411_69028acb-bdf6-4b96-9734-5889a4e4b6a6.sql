@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.citizen_verify(uuid, boolean, text) TO authenticated;
