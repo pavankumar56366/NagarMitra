@@ -141,6 +141,28 @@ function AuthPage() {
           </p>
         </div>
 
+        {existingEmail ? (
+          <div className="card-surface mb-4 p-4">
+            <p className="text-sm">
+              You are already signed in as <span className="font-semibold">{existingEmail}</span>.
+            </p>
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={continueSession}
+                className="h-10 flex-1 rounded-xl bg-primary text-sm font-semibold text-primary-foreground"
+              >
+                Continue
+              </button>
+              <button
+                onClick={switchAccount}
+                className="h-10 flex-1 rounded-xl border border-border text-sm font-semibold hover:bg-accent"
+              >
+                Use another account
+              </button>
+            </div>
+          </div>
+        ) : null}
+
         {persona === null ? (
           <div className="card-surface animate-in fade-in slide-in-from-bottom-2 p-6 duration-300">
             <h2 className="font-display text-lg font-semibold">How are you using NagarMitra?</h2>
