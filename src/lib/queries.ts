@@ -10,6 +10,9 @@ export type Zone = {
   sensitivity_tags: string[];
   center_lat: number;
   center_lng: number;
+  ward_number?: number | null;
+  ward_member_name?: string | null;
+  locations?: string | null;
 };
 
 export type Worker = {
@@ -133,7 +136,14 @@ function unwrap<T>(res: { data: T | null; error: { message: string } | null }): 
 
 export const zonesQuery = queryOptions({
   queryKey: ["zones"],
-  queryFn: async () => unwrap<Zone[]>(await supabase.from("zones").select("*").order("name")),
+  queryFn: async () =>
+    unwrap<Zone[]>(
+      await supabase
+        .from("zones")
+        .select("*")
+        .order("ward_number", { ascending: true, nullsFirst: false })
+        .order("name"),
+    ),
 });
 
 export const workersQuery = queryOptions({
