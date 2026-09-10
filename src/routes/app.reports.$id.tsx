@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, MapPin } from "lucide-react";
+import { ArrowLeft, MapPin, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { verifyCitizenCleanup } from "@/lib/citizen-verification.functions";
+import { deleteCitizenReport, deletionMode } from "@/lib/citizen-delete.functions";
 import { myComplaintsQuery, photoUrlQuery } from "@/lib/citizen";
 import { complaintEventsQuery, workersQuery } from "@/lib/queries";
 import { StatusBadge, PriorityBadge } from "@/components/status-badge";
@@ -40,12 +40,48 @@ function ReportDetail() {
   const { data: workers = [] } = useQuery(workersQuery);
   const { data: photo } = useQuery(photoUrlQuery(complaint?.photo_url ?? null));
 
+  const navigate = useNavigate();
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const worker = workers.find((w) => w.id === complaint?.assigned_worker_id) ?? null;
+  const isCancelled = Boolean(complaint?.deleted_at) || complaint?.status === "cancelled";
   const canVerify =
-    complaint && complaint.status === "resolved" && complaint.verification_status !== "confirmed";
+    complaint &&
+    !isCancelled &&
+    complaint.status === "resolved" &&
+    complaint.verification_status !== "confirmed";
+  const mode = complaint
+    ? deletionMode(complaint.status, complaint.deleted_at ?? null)
+    : ("none" as const);
+
+  async function removeReport() {
+    if (!complaint) return;
+    setDeleting(true);
+    try {
+      const result = await deleteCitizenReport({
+        data: { complaintId: complaint.id, reason: note.trim() || undefined },
+      });
+      toast.success(
+        result.outcome === "deleted"
+          ? "Report deleted successfully."
+          : "Report withdrawn successfully.",
+      );
+      await queryClient.invalidateQueries({ queryKey: ["my_complaints"] });
+      await queryClient.invalidateQueries({ queryKey: ["complaint_events", complaint.id] });
+      if (result.outcome === "deleted") {
+        void navigate({ to: "/app/reports" });
+        return;
+      }
+      setConfirmDelete(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not delete the report");
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   async function verify(confirmed: boolean) {
     if (!complaint) return;
@@ -144,6 +180,58 @@ function ReportDetail() {
               className="h-12 flex-1 rounded-xl border border-destructive font-semibold text-destructive disabled:opacity-50"
             >
               Still dirty
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isCancelled && (
+        <p className="card-surface p-5 text-sm text-muted-foreground">
+          You withdrew this report, so it is no longer active and cannot be changed.
+        </p>
+      )}
+
+      {mode !== "none" && !confirmDelete && (
+        <button
+          onClick={() => setConfirmDelete(true)}
+          className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-destructive font-semibold text-destructive"
+        >
+          <Trash2 className="h-4 w-4" />
+          {mode === "delete" ? "Delete report" : "Withdraw report"}
+        </button>
+      )}
+
+      {mode !== "none" && confirmDelete && (
+        <div className="card-surface space-y-3 p-5">
+          <h2 className="font-display text-base font-semibold">
+            Are you sure you want to delete this report?
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {mode === "delete"
+              ? "This report has not been picked up yet, so it will be removed completely along with its updates. This cannot be undone."
+              : "A crew is already working on this report, so it cannot be removed. It will be marked withdrawn and stay in the ward's records for their work and checks."}
+          </p>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={2}
+            placeholder="Reason (optional)"
+            className="w-full rounded-xl border border-border bg-background p-3 text-sm"
+          />
+          <div className="flex gap-3">
+            <button
+              disabled={deleting}
+              onClick={() => setConfirmDelete(false)}
+              className="h-12 flex-1 rounded-xl border border-border font-semibold disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              disabled={deleting}
+              onClick={removeReport}
+              className="h-12 flex-1 rounded-xl bg-destructive font-semibold text-destructive-foreground disabled:opacity-50"
+            >
+              {mode === "delete" ? "Delete report" : "Withdraw report"}
             </button>
           </div>
         </div>

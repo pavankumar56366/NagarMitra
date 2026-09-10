@@ -97,6 +97,9 @@ export type Database = {
           citizen_name: string
           citizen_note: string
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          deletion_reason: string | null
           description: string | null
           escalation_level: number
           id: string
@@ -126,6 +129,9 @@ export type Database = {
           citizen_name?: string
           citizen_note?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
           description?: string | null
           escalation_level?: number
           id?: string
@@ -155,6 +161,9 @@ export type Database = {
           citizen_name?: string
           citizen_note?: string
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_reason?: string | null
           description?: string | null
           escalation_level?: number
           id?: string
@@ -582,6 +591,7 @@ export type Database = {
         | "closed"
         | "escalated"
         | "reopened"
+        | "cancelled"
       waste_category:
         | "organic"
         | "plastic"
@@ -728,6 +738,7 @@ export const Constants = {
         "closed",
         "escalated",
         "reopened",
+        "cancelled",
       ],
       waste_category: [
         "organic",

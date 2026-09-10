@@ -6,7 +6,8 @@ export type ComplaintStatus =
   | "verified"
   | "closed"
   | "escalated"
-  | "reopened";
+  | "reopened"
+  | "cancelled";
 
 export type Priority = "critical" | "high" | "medium" | "low";
 
@@ -28,6 +29,7 @@ export const STATUS_LABEL: Record<ComplaintStatus, string> = {
   closed: "Closed",
   escalated: "Escalated",
   reopened: "Reopened",
+  cancelled: "Cancelled",
 };
 
 export const STATUS_ORDER: ComplaintStatus[] = [
@@ -39,6 +41,7 @@ export const STATUS_ORDER: ComplaintStatus[] = [
   "closed",
   "escalated",
   "reopened",
+  "cancelled",
 ];
 
 /** Hex values come straight from the design spec's status colour mapping. */
@@ -51,6 +54,7 @@ export const STATUS_HEX: Record<ComplaintStatus, string> = {
   closed: "#2A7C13",
   escalated: "#C00707",
   reopened: "#C00707",
+  cancelled: "#5B655F",
 };
 
 export const PRIORITY_LABEL: Record<Priority, string> = {
