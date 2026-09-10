@@ -5,6 +5,7 @@ import { myComplaintsQuery } from "@/lib/citizen";
 import { avatarUrlQuery, myAccessQuery } from "@/lib/queries";
 import { StatusBadge } from "@/components/status-badge";
 import { isOpen, relativeTime } from "@/lib/waste";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/app/")({
   head: () => ({
@@ -27,14 +28,15 @@ export const Route = createFileRoute("/app/")({
   component: CitizenHome,
 });
 
-function greeting() {
+function greetingKey() {
   const h = new Date().getHours();
-  if (h < 12) return "Good morning";
-  if (h < 17) return "Good afternoon";
-  return "Good evening";
+  if (h < 12) return "home.greeting.morning";
+  if (h < 17) return "home.greeting.afternoon";
+  return "home.greeting.evening";
 }
 
 function CitizenHome() {
+  const { t } = useI18n();
   const { data: me } = useQuery(myAccessQuery);
   const { data: avatar } = useQuery(avatarUrlQuery(me?.avatarUrl ?? null));
   const { data: complaints = [] } = useQuery(myComplaintsQuery);
@@ -48,9 +50,9 @@ function CitizenHome() {
     <div className="space-y-6">
       <header className="flex items-center gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-sm text-muted-foreground">{greeting()}</p>
+          <p className="text-sm text-muted-foreground">{t(greetingKey())}</p>
           <h1 className="truncate font-display text-2xl font-bold">
-            {me?.fullName?.split(" ")[0] || "Resident"}
+            {me?.fullName?.split(" ")[0] || t("home.resident")}
           </h1>
         </div>
         <Link to="/app/profile" aria-label="Open profile">
@@ -73,8 +75,8 @@ function CitizenHome() {
       >
         <Camera className="h-7 w-7" />
         <span className="flex-1">
-          <span className="block font-display text-lg font-bold">Report Waste</span>
-          <span className="block text-sm opacity-90">Capture a photo and send it to the ward</span>
+          <span className="block font-display text-lg font-bold">{t("home.report.title")}</span>
+          <span className="block text-sm opacity-90">{t("home.report.help")}</span>
         </span>
         <ChevronRight className="h-5 w-5" />
       </Link>
@@ -82,9 +84,9 @@ function CitizenHome() {
       <Link to="/app/segregate" className="card-surface flex items-center gap-4 p-5">
         <Recycle className="h-6 w-6 text-primary" />
         <span className="flex-1">
-          <span className="block font-semibold">Segregate Household Waste</span>
+          <span className="block font-semibold">{t("home.segregate.title")}</span>
           <span className="block text-sm text-muted-foreground">
-            Find the right bin for what is in your hand
+            {t("home.segregate.help")}
           </span>
         </span>
         <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -92,25 +94,25 @@ function CitizenHome() {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="card-surface p-4">
-          <p className="text-sm text-muted-foreground">Active reports</p>
+          <p className="text-sm text-muted-foreground">{t("home.active")}</p>
           <p className="font-display text-2xl font-bold">{active}</p>
         </div>
         <div className="card-surface p-4">
-          <p className="text-sm text-muted-foreground">Resolved</p>
+          <p className="text-sm text-muted-foreground">{t("home.resolved")}</p>
           <p className="font-display text-2xl font-bold">{done}</p>
         </div>
       </div>
 
       <section>
         <div className="mb-2 flex items-center justify-between">
-          <h2 className="font-display text-base font-semibold">Recent reports</h2>
+          <h2 className="font-display text-base font-semibold">{t("home.recent")}</h2>
           <Link to="/app/reports" className="text-sm font-semibold text-primary">
-            See all
+            {t("home.seeAll")}
           </Link>
         </div>
         {recent.length === 0 ? (
           <p className="card-surface p-5 text-sm text-muted-foreground">
-            You have not reported anything yet. Your reports will show up here.
+            {t("home.empty")}
           </p>
         ) : (
           <ul className="space-y-3">

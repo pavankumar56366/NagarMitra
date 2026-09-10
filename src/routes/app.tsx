@@ -2,6 +2,7 @@ import { createFileRoute, Link, Outlet, redirect, useRouterState } from "@tansta
 import { Camera, Home, Recycle, ClipboardList, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
@@ -24,20 +25,21 @@ export const Route = createFileRoute("/app")({
 
 const NAV: {
   to: "/app" | "/app/segregate" | "/app/report" | "/app/reports" | "/app/profile";
-  label: string;
+  labelKey: string;
   icon: typeof Home;
   exact?: boolean;
 }[] = [
-  { to: "/app", label: "Home", icon: Home, exact: true },
-  { to: "/app/segregate", label: "Segregate", icon: Recycle },
-  { to: "/app/report", label: "Report", icon: Camera },
-  { to: "/app/reports", label: "Reports", icon: ClipboardList },
-  { to: "/app/profile", label: "Profile", icon: User },
+  { to: "/app", labelKey: "nav.home", icon: Home, exact: true },
+  { to: "/app/segregate", labelKey: "nav.segregate", icon: Recycle },
+  { to: "/app/report", labelKey: "nav.report", icon: Camera },
+  { to: "/app/reports", labelKey: "nav.reports", icon: ClipboardList },
+  { to: "/app/profile", labelKey: "nav.profile", icon: User },
 ];
 
 
 function CitizenShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { t } = useI18n();
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[520px] flex-col bg-background">
@@ -61,7 +63,7 @@ function CitizenShell() {
               )}
             >
               <Icon className="h-5 w-5" />
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           );
         })}

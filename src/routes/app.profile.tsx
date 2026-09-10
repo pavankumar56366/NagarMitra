@@ -7,6 +7,8 @@ import { myComplaintsQuery } from "@/lib/citizen";
 import { AvatarUpload } from "@/components/avatar-upload";
 
 import { isOpen } from "@/lib/waste";
+import { useI18n } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export const Route = createFileRoute("/app/profile")({
   ssr: false,
@@ -28,6 +30,7 @@ export const Route = createFileRoute("/app/profile")({
 
 function ProfilePage() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const { data: me } = useQuery(myAccessQuery);
   const { data: complaints = [] } = useQuery(myComplaintsQuery);
 
@@ -35,16 +38,19 @@ function ProfilePage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="font-display text-xl font-bold">Profile</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="font-display text-xl font-bold">{t("profile.title")}</h1>
+        <LanguageSwitcher />
+      </div>
 
       <div className="card-surface flex items-center gap-4 p-5">
         <AvatarUpload />
         <div className="min-w-0">
           <p className="truncate font-display text-lg font-semibold">
-            {me?.fullName || "Resident"}
+            {me?.fullName || t("home.resident")}
           </p>
           <p className="truncate text-sm text-muted-foreground">{me?.email}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Tap the photo to change it</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("profile.changePhoto")}</p>
         </div>
       </div>
 
