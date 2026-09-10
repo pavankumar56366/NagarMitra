@@ -1,0 +1,171 @@
+import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, MapPin } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { verifyCitizenCleanup } from "@/lib/citizen-verification.functions";
+import { myComplaintsQuery, photoUrlQuery } from "@/lib/citizen";
+import { complaintEventsQuery, workersQuery } from "@/lib/queries";
+import { StatusBadge, PriorityBadge } from "@/components/status-badge";
+import { SlaChip } from "@/components/sla-chip";
+import { CATEGORY_LABEL, formatDateTime } from "@/lib/waste";
+
+export const Route = createFileRoute("/app/reports/$id")({
+  ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Report Details — NagarMitra" },
+      {
+        name: "description",
+        content:
+          "See the progress of your waste report, who is handling it, and confirm once the spot is clean.",
+      },
+      { property: "og:title", content: "Report Details — NagarMitra" },
+      { property: "og:description", content: "Progress, timing and verification for your report." },
+      { property: "og:type", content: "article" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: ReportDetail,
+});
+
+function ReportDetail() {
+  const { id } = Route.useParams();
+  const queryClient = useQueryClient();
+
+  const { data: complaints = [] } = useQuery(myComplaintsQuery);
+  const complaint = complaints.find((c) => c.id === id) ?? null;
+  const { data: events = [] } = useQuery(complaintEventsQuery(id));
+  const { data: workers = [] } = useQuery(workersQuery);
+  const { data: photo } = useQuery(photoUrlQuery(complaint?.photo_url ?? null));
+
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const worker = workers.find((w) => w.id === complaint?.assigned_worker_id) ?? null;
+  const canVerify =
+    complaint && complaint.status === "resolved" && complaint.verification_status !== "confirmed";
+
+  async function verify(confirmed: boolean) {
+    if (!complaint) return;
+    setBusy(true);
+    try {
+      await verifyCitizenCleanup({
+        data: { complaintId: complaint.id, confirmed, comment: note },
+      });
+    } catch (error) {
+      setBusy(false);
+      toast.error(error instanceof Error ? error.message : "Could not update the report");
+      return;
+    }
+    setBusy(false);
+    toast.success(confirmed ? "Thanks for confirming." : "We have reopened your report.");
+    await queryClient.invalidateQueries({ queryKey: ["my_complaints"] });
+    await queryClient.invalidateQueries({ queryKey: ["complaint_events", complaint.id] });
+    setNote("");
+  }
+
+  if (!complaint) {
+    return (
+      <div className="space-y-4">
+        <Link to="/app/reports" className="inline-flex items-center gap-2 text-sm font-semibold">
+          <ArrowLeft className="h-4 w-4" /> My reports
+        </Link>
+        <p className="card-surface p-5 text-sm text-muted-foreground">
+          We could not find that report.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-5">
+      <Link to="/app/reports" className="inline-flex items-center gap-2 text-sm font-semibold">
+        <ArrowLeft className="h-4 w-4" /> My reports
+      </Link>
+
+      <header className="space-y-2">
+        <h1 className="font-display text-xl font-bold">
+          {complaint.ai_label || CATEGORY_LABEL[complaint.waste_category]}
+        </h1>
+        <p className="text-sm text-muted-foreground">{complaint.reference}</p>
+        <div className="flex flex-wrap items-center gap-2">
+          <StatusBadge status={complaint.status} />
+          <PriorityBadge priority={complaint.priority} />
+          <SlaChip start={complaint.sla_start} deadline={complaint.sla_deadline} />
+        </div>
+      </header>
+
+      {photo && <img src={photo} alt="Waste you reported" className="w-full rounded-2xl" />}
+
+      <div className="card-surface space-y-2 p-5 text-sm">
+        <p className="flex items-center gap-2 text-muted-foreground">
+          <MapPin className="h-4 w-4" />
+          {complaint.address || `${complaint.lat.toFixed(5)}, ${complaint.lng.toFixed(5)}`}
+        </p>
+        <p>
+          <span className="text-muted-foreground">Reported:</span>{" "}
+          {formatDateTime(complaint.created_at)}
+        </p>
+        <p>
+          <span className="text-muted-foreground">Category:</span>{" "}
+          {CATEGORY_LABEL[complaint.waste_category]}
+        </p>
+        {worker && (
+          <p>
+            <span className="text-muted-foreground">Assigned crew:</span> {worker.name}
+          </p>
+        )}
+        {complaint.description && <p className="pt-1">{complaint.description}</p>}
+      </div>
+
+      {canVerify && (
+        <div className="card-surface space-y-3 p-5">
+          <h2 className="font-display text-base font-semibold">Is the spot clean now?</h2>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={3}
+            placeholder="Add a note (optional)"
+            className="w-full rounded-xl border border-border bg-background p-3 text-sm"
+          />
+          <div className="flex gap-3">
+            <button
+              disabled={busy}
+              onClick={() => verify(true)}
+              className="h-12 flex-1 rounded-xl bg-primary font-semibold text-primary-foreground disabled:opacity-50"
+            >
+              Yes, it is clean
+            </button>
+            <button
+              disabled={busy}
+              onClick={() => verify(false)}
+              className="h-12 flex-1 rounded-xl border border-destructive font-semibold text-destructive disabled:opacity-50"
+            >
+              Still dirty
+            </button>
+          </div>
+        </div>
+      )}
+
+      <section className="space-y-3">
+        <h2 className="font-display text-base font-semibold">Progress</h2>
+        <ol className="space-y-3">
+          {events.map((e) => (
+            <li key={e.id} className="card-surface p-4">
+              <p className="text-sm font-semibold capitalize">{e.event_type.replace(/_/g, " ")}</p>
+              <p className="text-xs text-muted-foreground">
+                {formatDateTime(e.created_at)} · {e.actor}
+              </p>
+              {e.detail && <p className="pt-1 text-sm">{e.detail}</p>}
+            </li>
+          ))}
+          {events.length === 0 && (
+            <li className="text-sm text-muted-foreground">No updates yet.</li>
+          )}
+        </ol>
+      </section>
+    </div>
+  );
+}
