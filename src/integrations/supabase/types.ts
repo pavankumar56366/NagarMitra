@@ -84,6 +84,44 @@ export type Database = {
           },
         ]
       }
+      complaint_supports: {
+        Row: {
+          citizen_id: string
+          complaint_id: string
+          created_at: string
+          id: string
+          lat: number
+          lng: number
+          note: string
+        }
+        Insert: {
+          citizen_id: string
+          complaint_id: string
+          created_at?: string
+          id?: string
+          lat?: number
+          lng?: number
+          note?: string
+        }
+        Update: {
+          citizen_id?: string
+          complaint_id?: string
+          created_at?: string
+          id?: string
+          lat?: number
+          lng?: number
+          note?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "complaint_supports_complaint_id_fkey"
+            columns: ["complaint_id"]
+            isOneToOne: false
+            referencedRelation: "complaints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       complaints: {
         Row: {
           accepted_at: string | null
@@ -101,19 +139,33 @@ export type Database = {
           deleted_by: string | null
           deletion_reason: string | null
           description: string | null
+          duplicate_confidence: number
+          duplicate_detection_reason: string
+          duplicate_of_complaint_id: string | null
+          duplicate_status: string
           escalation_level: number
           id: string
+          image_hash: string
+          issue_detected: boolean
           lat: number
           lng: number
+          location_name: string
           photo_url: string | null
           priority: Database["public"]["Enums"]["complaint_priority"]
           priority_override_reason: string | null
           reference: string
+          report_quality: Json
+          report_quality_score: number
+          report_validation_status: string
+          reported_at: string
           resolved_at: string | null
+          severity: string
           sla_deadline: string | null
           sla_start: string | null
           status: Database["public"]["Enums"]["complaint_status"]
+          validation_reason: string
           verification_status: string | null
+          waste_amount: string
           waste_category: Database["public"]["Enums"]["waste_category"]
           zone_id: string | null
         }
@@ -133,19 +185,33 @@ export type Database = {
           deleted_by?: string | null
           deletion_reason?: string | null
           description?: string | null
+          duplicate_confidence?: number
+          duplicate_detection_reason?: string
+          duplicate_of_complaint_id?: string | null
+          duplicate_status?: string
           escalation_level?: number
           id?: string
+          image_hash?: string
+          issue_detected?: boolean
           lat?: number
           lng?: number
+          location_name?: string
           photo_url?: string | null
           priority?: Database["public"]["Enums"]["complaint_priority"]
           priority_override_reason?: string | null
           reference?: string
+          report_quality?: Json
+          report_quality_score?: number
+          report_validation_status?: string
+          reported_at?: string
           resolved_at?: string | null
+          severity?: string
           sla_deadline?: string | null
           sla_start?: string | null
           status?: Database["public"]["Enums"]["complaint_status"]
+          validation_reason?: string
           verification_status?: string | null
+          waste_amount?: string
           waste_category?: Database["public"]["Enums"]["waste_category"]
           zone_id?: string | null
         }
@@ -165,19 +231,33 @@ export type Database = {
           deleted_by?: string | null
           deletion_reason?: string | null
           description?: string | null
+          duplicate_confidence?: number
+          duplicate_detection_reason?: string
+          duplicate_of_complaint_id?: string | null
+          duplicate_status?: string
           escalation_level?: number
           id?: string
+          image_hash?: string
+          issue_detected?: boolean
           lat?: number
           lng?: number
+          location_name?: string
           photo_url?: string | null
           priority?: Database["public"]["Enums"]["complaint_priority"]
           priority_override_reason?: string | null
           reference?: string
+          report_quality?: Json
+          report_quality_score?: number
+          report_validation_status?: string
+          reported_at?: string
           resolved_at?: string | null
+          severity?: string
           sla_deadline?: string | null
           sla_start?: string | null
           status?: Database["public"]["Enums"]["complaint_status"]
+          validation_reason?: string
           verification_status?: string | null
+          waste_amount?: string
           waste_category?: Database["public"]["Enums"]["waste_category"]
           zone_id?: string | null
         }
@@ -190,10 +270,86 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "complaints_duplicate_of_complaint_id_fkey"
+            columns: ["duplicate_of_complaint_id"]
+            isOneToOne: false
+            referencedRelation: "complaints"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "complaints_zone_id_fkey"
             columns: ["zone_id"]
             isOneToOne: false
             referencedRelation: "zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      completion_evidence: {
+        Row: {
+          captured_at: string
+          complaint_id: string
+          completion_validation_status: string
+          created_at: string
+          distance_from_reported_location: number
+          gps_verified: boolean
+          id: string
+          image_path: string
+          latitude: number
+          location_name: string
+          longitude: number
+          updated_at: string
+          validation_reason: string
+          worker_id: string | null
+          worker_user_id: string | null
+        }
+        Insert: {
+          captured_at?: string
+          complaint_id: string
+          completion_validation_status?: string
+          created_at?: string
+          distance_from_reported_location?: number
+          gps_verified?: boolean
+          id?: string
+          image_path?: string
+          latitude?: number
+          location_name?: string
+          longitude?: number
+          updated_at?: string
+          validation_reason?: string
+          worker_id?: string | null
+          worker_user_id?: string | null
+        }
+        Update: {
+          captured_at?: string
+          complaint_id?: string
+          completion_validation_status?: string
+          created_at?: string
+          distance_from_reported_location?: number
+          gps_verified?: boolean
+          id?: string
+          image_path?: string
+          latitude?: number
+          location_name?: string
+          longitude?: number
+          updated_at?: string
+          validation_reason?: string
+          worker_id?: string | null
+          worker_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "completion_evidence_complaint_id_fkey"
+            columns: ["complaint_id"]
+            isOneToOne: false
+            referencedRelation: "complaints"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "completion_evidence_worker_id_fkey"
+            columns: ["worker_id"]
+            isOneToOne: false
+            referencedRelation: "workers"
             referencedColumns: ["id"]
           },
         ]

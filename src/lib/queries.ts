@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { ReportQuality } from "./report-scoring";
 import type { ComplaintStatus, Priority, WasteCategory } from "./waste";
 
 export type Zone = {
@@ -52,8 +53,53 @@ export type Complaint = {
   deleted_at?: string | null;
   deleted_by?: string | null;
   deletion_reason?: string | null;
+  location_name?: string | null;
+  reported_at?: string | null;
+  report_quality?: Partial<ReportQuality> | null;
+  report_quality_score?: number | null;
+  report_validation_status?: string | null;
+  validation_reason?: string | null;
+  issue_detected?: boolean | null;
+  waste_amount?: string | null;
+  severity?: string | null;
+  duplicate_status?: string | null;
+  duplicate_of_complaint_id?: string | null;
+  duplicate_confidence?: number | null;
+  duplicate_detection_reason?: string | null;
+  image_hash?: string | null;
 };
 
+export type CompletionEvidence = {
+  id: string;
+  complaint_id: string;
+  worker_id: string | null;
+  worker_user_id: string | null;
+  image_path: string;
+  latitude: number;
+  longitude: number;
+  location_name: string;
+  captured_at: string;
+  gps_verified: boolean;
+  distance_from_reported_location: number;
+  completion_validation_status: string;
+  validation_reason: string;
+  created_at: string;
+};
+
+export function completionEvidenceQuery(complaintId: string) {
+  return queryOptions({
+    queryKey: ["completion_evidence", complaintId],
+    queryFn: async (): Promise<CompletionEvidence[]> => {
+      const { data, error } = await supabase
+        .from("completion_evidence")
+        .select("*")
+        .eq("complaint_id", complaintId)
+        .order("created_at", { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as unknown as CompletionEvidence[];
+    },
+  });
+}
 
 export type ComplaintEvent = {
   id: string;
@@ -87,14 +133,12 @@ function unwrap<T>(res: { data: T | null; error: { message: string } | null }): 
 
 export const zonesQuery = queryOptions({
   queryKey: ["zones"],
-  queryFn: async () =>
-    unwrap<Zone[]>(await supabase.from("zones").select("*").order("name")),
+  queryFn: async () => unwrap<Zone[]>(await supabase.from("zones").select("*").order("name")),
 });
 
 export const workersQuery = queryOptions({
   queryKey: ["workers"],
-  queryFn: async () =>
-    unwrap<Worker[]>(await supabase.from("workers").select("*").order("name")),
+  queryFn: async () => unwrap<Worker[]>(await supabase.from("workers").select("*").order("name")),
 });
 
 export const myWorkerQuery = queryOptions({
@@ -115,10 +159,14 @@ export const myWorkerQuery = queryOptions({
 
 export const complaintsQuery = queryOptions({
   queryKey: ["complaints"],
-  queryFn: async () =>
-    unwrap<Complaint[]>(
-      await supabase.from("complaints").select("*").order("created_at", { ascending: false }),
-    ),
+  queryFn: async () => {
+    const { data, error } = await supabase
+      .from("complaints")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return (data ?? []) as unknown as Complaint[];
+  },
 });
 
 export const escalationsQuery = queryOptions({
@@ -131,8 +179,7 @@ export const escalationsQuery = queryOptions({
 
 export const slaConfigQuery = queryOptions({
   queryKey: ["sla_config"],
-  queryFn: async () =>
-    unwrap<SlaConfig[]>(await supabase.from("sla_config").select("*")),
+  queryFn: async () => unwrap<SlaConfig[]>(await supabase.from("sla_config").select("*")),
 });
 
 export function complaintEventsQuery(complaintId: string) {
@@ -173,8 +220,7 @@ export const myAccessQuery = queryOptions({
       role: role as "commissioner" | "zonal_officer" | "citizen" | "worker",
       zoneId: (profile?.zone_id as string | null) ?? null,
       avatarUrl: ((profile as { avatar_url?: string | null } | null)?.avatar_url ?? null) as
-        | string
-        | null,
+        string | null,
     };
   },
 });
@@ -192,4 +238,3 @@ export function avatarUrlQuery(path: string | null) {
     staleTime: 1000 * 60 * 30,
   });
 }
-

@@ -8,8 +8,10 @@ import { StatusBadge, PriorityBadge } from "@/components/status-badge";
 import { SlaChip } from "@/components/sla-chip";
 import { photoUrlQuery } from "@/lib/citizen";
 
+import { ReportQualityPanel } from "@/components/report-quality-panel";
 import {
   complaintEventsQuery,
+  completionEvidenceQuery,
   complaintsQuery,
   escalationsQuery,
   myAccessQuery,
@@ -56,6 +58,7 @@ function ComplaintDetail() {
   const { data: zones = [] } = useQuery(zonesQuery);
   const { data: events = [] } = useQuery(complaintEventsQuery(id));
   const { data: escalations = [] } = useQuery(escalationsQuery);
+  const { data: evidence = [] } = useQuery(completionEvidenceQuery(id));
   const { data: access } = useQuery(myAccessQuery);
 
   const complaint = complaints.find((c) => c.id === id);
@@ -76,7 +79,10 @@ function ComplaintDetail() {
       eventType: string;
       detail: string;
     }) => {
-      const { error } = await supabase.from("complaints").update(patch as never).eq("id", id);
+      const { error } = await supabase
+        .from("complaints")
+        .update(patch as never)
+        .eq("id", id);
       if (error) throw new Error(error.message);
       const { error: evErr } = await supabase.from("complaint_events").insert({
         complaint_id: id,
@@ -95,7 +101,6 @@ function ComplaintDetail() {
   });
 
   const { data: photo } = useQuery(photoUrlQuery(complaint?.photo_url ?? null));
-
 
   if (!complaint) {
     return (
@@ -117,9 +122,7 @@ function ComplaintDetail() {
   const zone = zones.find((z) => z.id === complaint.zone_id);
   const assigned = workers.find((w) => w.id === complaint.assigned_worker_id);
   const trail = escalations.filter((e) => e.complaint_id === id);
-  const zoneWorkers = workers.filter(
-    (w) => !complaint.zone_id || w.zone_id === complaint.zone_id,
-  );
+  const zoneWorkers = workers.filter((w) => !complaint.zone_id || w.zone_id === complaint.zone_id);
 
   function assign() {
     if (!workerId) {
@@ -224,7 +227,67 @@ function ComplaintDetail() {
                 label="Citizen verification"
                 value={complaint.verification_status ?? "Not requested"}
               />
+              <Field label="Location name" value={complaint.location_name || complaint.address} />
+              <Field
+                label="Latitude / Longitude"
+                value={`${complaint.lat.toFixed(5)}, ${complaint.lng.toFixed(5)}`}
+              />
+              <Field
+                label="Validation"
+                value={`${complaint.report_validation_status ?? "—"}${
+                  complaint.report_quality_score != null
+                    ? ` · ${complaint.report_quality_score}/100`
+                    : ""
+                }`}
+              />
+              <Field
+                label="Waste amount / severity"
+                value={`${complaint.waste_amount ?? "—"} · ${complaint.severity ?? "—"}`}
+              />
+              <Field
+                label="Duplicate check"
+                value={`${complaint.duplicate_status ?? "UNIQUE"}${
+                  complaint.duplicate_confidence
+                    ? ` · ${Math.round(complaint.duplicate_confidence * 100)}%`
+                    : ""
+                }`}
+              />
             </dl>
+            {complaint.validation_reason ? (
+              <p className="mt-4 rounded-xl bg-muted p-4 text-sm">{complaint.validation_reason}</p>
+            ) : null}
+            {complaint.duplicate_detection_reason ? (
+              <p className="mt-3 rounded-xl bg-muted p-4 text-sm">
+                <strong>Duplicate detection: </strong>
+                {complaint.duplicate_detection_reason}
+              </p>
+            ) : null}
+            <ReportQualityPanel
+              className="mt-4"
+              quality={complaint.report_quality}
+              score={complaint.report_quality_score}
+            />
+            {evidence.length > 0 ? (
+              <div className="mt-4 space-y-2">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Worker completion evidence
+                </h3>
+                {evidence.map((ev) => (
+                  <div key={ev.id} className="rounded-xl border border-border p-4 text-sm">
+                    <p className="font-semibold">
+                      {ev.gps_verified ? "GPS verified" : "Rejected — location mismatch"} ·{" "}
+                      {ev.distance_from_reported_location} m from the reported location
+                    </p>
+                    <p className="text-muted-foreground">
+                      {formatDateTime(ev.captured_at)} · {ev.location_name}
+                    </p>
+                    {ev.validation_reason ? (
+                      <p className="mt-1 text-muted-foreground">{ev.validation_reason}</p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            ) : null}
             {complaint.citizen_note ? (
               <p className="mt-4 rounded-xl bg-muted p-4 text-sm">{complaint.citizen_note}</p>
             ) : null}
