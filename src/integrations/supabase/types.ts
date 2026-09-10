@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      citizen_verifications: {
+        Row: {
+          citizen_id: string
+          comment: string | null
+          complaint_id: string
+          id: string
+          result: string
+          verified_at: string
+        }
+        Insert: {
+          citizen_id: string
+          comment?: string | null
+          complaint_id: string
+          id?: string
+          result: string
+          verified_at?: string
+        }
+        Update: {
+          citizen_id?: string
+          comment?: string | null
+          complaint_id?: string
+          id?: string
+          result?: string
+          verified_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "citizen_verifications_complaint_id_fkey"
+            columns: ["complaint_id"]
+            isOneToOne: false
+            referencedRelation: "complaints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       complaint_events: {
         Row: {
           actor: string
@@ -54,14 +89,19 @@ export type Database = {
           accepted_at: string | null
           address: string
           ai_confidence: number
+          ai_label: string | null
           assigned_worker_id: string | null
+          captured_at: string | null
+          citizen_id: string | null
           citizen_name: string
           citizen_note: string
           created_at: string
+          description: string | null
           escalation_level: number
           id: string
           lat: number
           lng: number
+          photo_url: string | null
           priority: Database["public"]["Enums"]["complaint_priority"]
           priority_override_reason: string | null
           reference: string
@@ -77,17 +117,22 @@ export type Database = {
           accepted_at?: string | null
           address?: string
           ai_confidence?: number
+          ai_label?: string | null
           assigned_worker_id?: string | null
+          captured_at?: string | null
+          citizen_id?: string | null
           citizen_name?: string
           citizen_note?: string
           created_at?: string
+          description?: string | null
           escalation_level?: number
           id?: string
           lat?: number
           lng?: number
+          photo_url?: string | null
           priority?: Database["public"]["Enums"]["complaint_priority"]
           priority_override_reason?: string | null
-          reference: string
+          reference?: string
           resolved_at?: string | null
           sla_deadline?: string | null
           sla_start?: string | null
@@ -100,14 +145,19 @@ export type Database = {
           accepted_at?: string | null
           address?: string
           ai_confidence?: number
+          ai_label?: string | null
           assigned_worker_id?: string | null
+          captured_at?: string | null
+          citizen_id?: string | null
           citizen_name?: string
           citizen_note?: string
           created_at?: string
+          description?: string | null
           escalation_level?: number
           id?: string
           lat?: number
           lng?: number
+          photo_url?: string | null
           priority?: Database["public"]["Enums"]["complaint_priority"]
           priority_override_reason?: string | null
           reference?: string
@@ -203,6 +253,140 @@ export type Database = {
           },
         ]
       }
+      segregation_results: {
+        Row: {
+          bounding_box_json: Json | null
+          confidence: number
+          created_at: string
+          disposal_guidance: string
+          id: string
+          label: string
+          recommended_bin_color: string
+          recommended_bin_label: string
+          recommended_stream: string
+          session_id: string
+          warning_text: string | null
+          waste_category_id: string | null
+        }
+        Insert: {
+          bounding_box_json?: Json | null
+          confidence?: number
+          created_at?: string
+          disposal_guidance: string
+          id?: string
+          label: string
+          recommended_bin_color: string
+          recommended_bin_label: string
+          recommended_stream: string
+          session_id: string
+          warning_text?: string | null
+          waste_category_id?: string | null
+        }
+        Update: {
+          bounding_box_json?: Json | null
+          confidence?: number
+          created_at?: string
+          disposal_guidance?: string
+          id?: string
+          label?: string
+          recommended_bin_color?: string
+          recommended_bin_label?: string
+          recommended_stream?: string
+          session_id?: string
+          warning_text?: string | null
+          waste_category_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "segregation_results_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "segregation_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "segregation_results_waste_category_id_fkey"
+            columns: ["waste_category_id"]
+            isOneToOne: false
+            referencedRelation: "waste_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      segregation_rules: {
+        Row: {
+          bin_color: string
+          bin_label: string
+          created_at: string
+          disposal_guidance: string
+          id: string
+          is_active: boolean
+          updated_at: string
+          warning_text: string | null
+          waste_category_id: string
+          waste_stream: string
+        }
+        Insert: {
+          bin_color: string
+          bin_label: string
+          created_at?: string
+          disposal_guidance: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          warning_text?: string | null
+          waste_category_id: string
+          waste_stream: string
+        }
+        Update: {
+          bin_color?: string
+          bin_label?: string
+          created_at?: string
+          disposal_guidance?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          warning_text?: string | null
+          waste_category_id?: string
+          waste_stream?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "segregation_rules_waste_category_id_fkey"
+            columns: ["waste_category_id"]
+            isOneToOne: false
+            referencedRelation: "waste_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      segregation_sessions: {
+        Row: {
+          analyzed_at: string
+          citizen_id: string
+          created_at: string
+          id: string
+          image_url: string
+          status: string
+        }
+        Insert: {
+          analyzed_at?: string
+          citizen_id: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          status?: string
+        }
+        Update: {
+          analyzed_at?: string
+          citizen_id?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          status?: string
+        }
+        Relationships: []
+      }
       sla_config: {
         Row: {
           duration_hours: number
@@ -242,6 +426,36 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      waste_categories: {
+        Row: {
+          created_at: string
+          default_priority: Database["public"]["Enums"]["complaint_priority"]
+          description: string
+          id: string
+          is_active: boolean
+          key: Database["public"]["Enums"]["waste_category"]
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          default_priority?: Database["public"]["Enums"]["complaint_priority"]
+          description?: string
+          id?: string
+          is_active?: boolean
+          key: Database["public"]["Enums"]["waste_category"]
+          name: string
+        }
+        Update: {
+          created_at?: string
+          default_priority?: Database["public"]["Enums"]["complaint_priority"]
+          description?: string
+          id?: string
+          is_active?: boolean
+          key?: Database["public"]["Enums"]["waste_category"]
+          name?: string
         }
         Relationships: []
       }
@@ -319,6 +533,10 @@ export type Database = {
     }
     Functions: {
       can_view_zone: { Args: { _zone_id: string }; Returns: boolean }
+      citizen_verify: {
+        Args: { _comment?: string; _complaint_id: string; _confirmed: boolean }
+        Returns: undefined
+      }
       current_zone: { Args: never; Returns: string }
       has_role: {
         Args: {
@@ -327,6 +545,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_staff: { Args: never; Returns: boolean }
       run_sla_escalation: { Args: never; Returns: number }
     }
     Enums: {
