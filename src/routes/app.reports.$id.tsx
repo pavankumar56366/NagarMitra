@@ -185,6 +185,58 @@ function ReportDetail() {
         </div>
       )}
 
+      {isCancelled && (
+        <p className="card-surface p-5 text-sm text-muted-foreground">
+          You withdrew this report, so it is no longer active and cannot be changed.
+        </p>
+      )}
+
+      {mode !== "none" && !confirmDelete && (
+        <button
+          onClick={() => setConfirmDelete(true)}
+          className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-destructive font-semibold text-destructive"
+        >
+          <Trash2 className="h-4 w-4" />
+          {mode === "delete" ? "Delete report" : "Withdraw report"}
+        </button>
+      )}
+
+      {mode !== "none" && confirmDelete && (
+        <div className="card-surface space-y-3 p-5">
+          <h2 className="font-display text-base font-semibold">
+            Are you sure you want to delete this report?
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {mode === "delete"
+              ? "This report has not been picked up yet, so it will be removed completely along with its updates. This cannot be undone."
+              : "A crew is already working on this report, so it cannot be removed. It will be marked withdrawn and stay in the ward's records for their work and checks."}
+          </p>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={2}
+            placeholder="Reason (optional)"
+            className="w-full rounded-xl border border-border bg-background p-3 text-sm"
+          />
+          <div className="flex gap-3">
+            <button
+              disabled={deleting}
+              onClick={() => setConfirmDelete(false)}
+              className="h-12 flex-1 rounded-xl border border-border font-semibold disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              disabled={deleting}
+              onClick={removeReport}
+              className="h-12 flex-1 rounded-xl bg-destructive font-semibold text-destructive-foreground disabled:opacity-50"
+            >
+              {mode === "delete" ? "Delete report" : "Withdraw report"}
+            </button>
+          </div>
+        </div>
+      )}
+
       <section className="space-y-3">
         <h2 className="font-display text-base font-semibold">Progress</h2>
         <ol className="space-y-3">
