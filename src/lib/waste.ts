@@ -6,7 +6,8 @@ export type ComplaintStatus =
   | "verified"
   | "closed"
   | "escalated"
-  | "reopened";
+  | "reopened"
+  | "cancelled";
 
 export type Priority = "critical" | "high" | "medium" | "low";
 
