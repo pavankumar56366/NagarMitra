@@ -128,7 +128,7 @@ function AuthPage() {
   return (
     <div
       className={cn(
-        "flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-primary/[0.04] to-background px-4 py-12 transition-colors",
+        "flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-orange-400/[0.08] to-orange-50/30 px-4 py-12 transition-colors",
         isWorker ? "field-theme" : "",
       )}
     >

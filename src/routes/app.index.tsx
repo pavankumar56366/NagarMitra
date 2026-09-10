@@ -48,7 +48,7 @@ function CitizenHome() {
   const recent = complaints.slice(0, 3);
 
   return (
-    <div className="space-y-6 rounded-3xl bg-gradient-to-b from-primary/[0.04] via-background to-background p-4 -mx-4 -mt-6 pt-6">
+    <div className="space-y-6 rounded-3xl bg-gradient-to-b from-orange-400/[0.08] via-orange-50/20 to-background p-4 -mx-4 -mt-6 pt-6">
 
       <header className="flex items-center gap-3">
         <img
