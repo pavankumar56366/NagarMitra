@@ -330,7 +330,7 @@ export type Database = {
       run_sla_escalation: { Args: never; Returns: number }
     }
     Enums: {
-      app_role: "commissioner" | "zonal_officer"
+      app_role: "commissioner" | "zonal_officer" | "citizen"
       complaint_priority: "critical" | "high" | "medium" | "low"
       complaint_status:
         | "pending"
@@ -476,7 +476,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["commissioner", "zonal_officer"],
+      app_role: ["commissioner", "zonal_officer", "citizen"],
       complaint_priority: ["critical", "high", "medium", "low"],
       complaint_status: [
         "pending",
