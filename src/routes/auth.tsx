@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { HardHat, Leaf, ArrowLeft, ShieldCheck } from "lucide-react";
+import { HardHat, Leaf, ArrowLeft, ShieldCheck, ChevronRight } from "lucide-react";
 import logoAsset from "@/assets/nagarmitra-logo.jpg.asset.json";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
