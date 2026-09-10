@@ -128,10 +128,11 @@ function AuthPage() {
   return (
     <div
       className={cn(
-        "flex min-h-screen items-center justify-center px-4 py-12 transition-colors",
-        isWorker ? "field-theme bg-background" : "bg-background",
+        "flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-primary/[0.04] to-background px-4 py-12 transition-colors",
+        isWorker ? "field-theme" : "",
       )}
     >
+
       <div className="w-full max-w-[420px]">
         <div className="mb-4 flex justify-end">
           <LanguageSwitcher />
