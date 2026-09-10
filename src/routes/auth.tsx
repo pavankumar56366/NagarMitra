@@ -177,48 +177,71 @@ function AuthPage() {
         ) : null}
 
         {persona === null ? (
-          <div className="card-surface animate-in fade-in slide-in-from-bottom-2 p-6 duration-300">
-            <h2 className="font-display text-lg font-semibold">{t("auth.persona.title")}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("auth.persona.help")}
-            </p>
+          <div className="card-surface animate-in fade-in slide-in-from-bottom-3 relative overflow-hidden p-6 duration-500">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -top-24 -right-20 h-48 w-48 rounded-full bg-primary/15 blur-3xl"
+            />
+            <div className="relative">
+              <h2 className="font-display text-xl font-bold tracking-tight">
+                {t("auth.persona.title")}
+              </h2>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                {t("auth.persona.help")}
+              </p>
 
-            <div className="mt-5 space-y-3">
-              <button
-                onClick={() => {
-                  setPersona("citizen");
-                  setMode("signin");
-                }}
-                className="flex w-full items-center gap-4 rounded-2xl border-[1.5px] border-border p-4 text-left transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
-              >
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Leaf className="h-5 w-5" />
-                </span>
-                <span className="flex-1">
-                  <span className="block font-semibold">{t("auth.persona.citizen")}</span>
-                  <span className="block text-sm text-muted-foreground">
-                    {t("auth.persona.citizen.help")}
+              <div className="mt-6 space-y-3">
+                <button
+                  onClick={() => {
+                    setPersona("citizen");
+                    setMode("signin");
+                  }}
+                  className="group relative flex w-full items-center gap-4 overflow-hidden rounded-2xl border border-border bg-card p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                >
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  />
+                  <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/12 text-primary transition-transform duration-300 group-hover:scale-105">
+                    <Leaf className="h-5.5 w-5.5" />
                   </span>
-                </span>
-              </button>
+                  <span className="relative flex-1">
+                    <span className="block font-semibold">{t("auth.persona.citizen")}</span>
+                    <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">
+                      {t("auth.persona.citizen.help")}
+                    </span>
+                  </span>
+                  <ChevronRight className="relative h-5 w-5 shrink-0 text-muted-foreground transition-all duration-300 group-hover:translate-x-1 group-hover:text-primary" />
+                </button>
 
-              <button
-                onClick={() => {
-                  setPersona("worker");
-                  setMode("signin");
-                }}
-                className="flex w-full items-center gap-4 rounded-2xl border-[1.5px] border-border p-4 text-left transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
-              >
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-muted text-foreground">
-                  <HardHat className="h-5 w-5" />
-                </span>
-                <span className="flex-1">
-                  <span className="block font-semibold">{t("auth.persona.worker")}</span>
-                  <span className="block text-sm text-muted-foreground">
-                    Sign in with the credentials your ward office gave you
+                <button
+                  onClick={() => {
+                    setPersona("worker");
+                    setMode("signin");
+                  }}
+                  className="group relative flex w-full items-center gap-4 overflow-hidden rounded-2xl border border-border bg-card p-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                >
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 bg-gradient-to-r from-accent/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  />
+                  <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-muted text-foreground transition-transform duration-300 group-hover:scale-105">
+                    <HardHat className="h-5.5 w-5.5" />
                   </span>
-                </span>
-              </button>
+                  <span className="relative flex-1">
+                    <span className="block font-semibold">{t("auth.persona.worker")}</span>
+                    <span className="mt-0.5 block text-sm leading-snug text-muted-foreground">
+                      Sign in with the credentials your ward office gave you
+                    </span>
+                  </span>
+                  <ChevronRight className="relative h-5 w-5 shrink-0 text-muted-foreground transition-all duration-300 group-hover:translate-x-1 group-hover:text-primary" />
+                </button>
+              </div>
+
+              <p className="mt-5 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                Secure sign-in — your reports stay tied to your account
+              </p>
             </div>
           </div>
         ) : (
