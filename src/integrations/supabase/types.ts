@@ -91,6 +91,7 @@ export type Database = {
           ai_confidence: number
           ai_label: string | null
           assigned_worker_id: string | null
+          assigned_worker_user_id: string | null
           captured_at: string | null
           citizen_id: string | null
           citizen_name: string
@@ -119,6 +120,7 @@ export type Database = {
           ai_confidence?: number
           ai_label?: string | null
           assigned_worker_id?: string | null
+          assigned_worker_user_id?: string | null
           captured_at?: string | null
           citizen_id?: string | null
           citizen_name?: string
@@ -147,6 +149,7 @@ export type Database = {
           ai_confidence?: number
           ai_label?: string | null
           assigned_worker_id?: string | null
+          assigned_worker_user_id?: string | null
           captured_at?: string | null
           citizen_id?: string | null
           citizen_name?: string
@@ -223,6 +226,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string
           email: string
           full_name: string
@@ -230,6 +234,7 @@ export type Database = {
           zone_id: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
           email?: string
           full_name?: string
@@ -237,6 +242,7 @@ export type Database = {
           zone_id?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
           email?: string
           full_name?: string
@@ -257,10 +263,14 @@ export type Database = {
         Row: {
           bounding_box_json: Json | null
           confidence: number
+          corrected_category: string | null
           created_at: string
           disposal_guidance: string
+          feedback: string | null
+          feedback_at: string | null
           id: string
           label: string
+          predicted_category: string | null
           recommended_bin_color: string
           recommended_bin_label: string
           recommended_stream: string
@@ -271,10 +281,14 @@ export type Database = {
         Insert: {
           bounding_box_json?: Json | null
           confidence?: number
+          corrected_category?: string | null
           created_at?: string
           disposal_guidance: string
+          feedback?: string | null
+          feedback_at?: string | null
           id?: string
           label: string
+          predicted_category?: string | null
           recommended_bin_color: string
           recommended_bin_label: string
           recommended_stream: string
@@ -285,10 +299,14 @@ export type Database = {
         Update: {
           bounding_box_json?: Json | null
           confidence?: number
+          corrected_category?: string | null
           created_at?: string
           disposal_guidance?: string
+          feedback?: string | null
+          feedback_at?: string | null
           id?: string
           label?: string
+          predicted_category?: string | null
           recommended_bin_color?: string
           recommended_bin_label?: string
           recommended_stream?: string
@@ -467,6 +485,7 @@ export type Database = {
           name: string
           performance_score: number
           phone: string
+          user_id: string | null
           zone_id: string | null
         }
         Insert: {
@@ -476,6 +495,7 @@ export type Database = {
           name: string
           performance_score?: number
           phone?: string
+          user_id?: string | null
           zone_id?: string | null
         }
         Update: {
@@ -485,6 +505,7 @@ export type Database = {
           name?: string
           performance_score?: number
           phone?: string
+          user_id?: string | null
           zone_id?: string | null
         }
         Relationships: [
@@ -537,6 +558,7 @@ export type Database = {
         Args: { _comment?: string; _complaint_id: string; _confirmed: boolean }
         Returns: undefined
       }
+      current_worker_id: { Args: never; Returns: string }
       current_zone: { Args: never; Returns: string }
       has_role: {
         Args: {
