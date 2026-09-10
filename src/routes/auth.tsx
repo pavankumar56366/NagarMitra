@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { HardHat, Leaf, Trash2, ArrowLeft, ShieldCheck } from "lucide-react";
+import { HardHat, Leaf, ArrowLeft, ShieldCheck } from "lucide-react";
+import logoAsset from "@/assets/nagarmitra-logo.jpg.asset.json";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
@@ -136,10 +137,17 @@ function AuthPage() {
           <LanguageSwitcher />
         </div>
         <div className="mb-8 flex flex-col items-center text-center">
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg">
-            {isWorker ? <HardHat className="h-7 w-7" /> : <Trash2 className="h-7 w-7" />}
-          </span>
-          <h1 className="mt-4 font-display text-3xl font-bold tracking-tight">NagarMitra</h1>
+          <img
+            src={logoAsset.url}
+            alt="Nagar Mitra logo"
+            className="h-24 w-24 rounded-2xl object-contain"
+          />
+          {isWorker ? (
+            <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              <HardHat className="h-3.5 w-3.5" /> Field crew
+            </span>
+          ) : null}
+          <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">Nagar Mitra</h1>
           <p className="text-sm text-muted-foreground">
             {isWorker ? t("auth.worker.tagline") : t("app.tagline")}
           </p>
