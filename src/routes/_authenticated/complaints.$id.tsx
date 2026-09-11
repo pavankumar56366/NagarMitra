@@ -360,27 +360,53 @@ function ComplaintDetail() {
         <div className="space-y-4">
           <div className="card-surface p-5">
             <h2 className="font-display text-base font-semibold">Assign or reassign</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {assigned
+                ? `Currently with ${assigned.name}`
+                : `${availableWorkers.length} worker${availableWorkers.length === 1 ? "" : "s"} on duty in this ward`}
+            </p>
             <select
               aria-label="Select worker"
               className={`${inputClass} mt-3`}
               value={workerId}
               onChange={(e) => setWorkerId(e.target.value)}
             >
-              <option value="">Choose a worker…</option>
-              {zoneWorkers.map((w) => (
-                <option key={w.id} value={w.id}>
-                  {w.name} · {w.availability} · {w.performance_score.toFixed(1)}★
-                </option>
-              ))}
+              <option value="">Choose an available worker…</option>
+              {availableWorkers.length > 0 ? (
+                <optgroup label="On duty">
+                  {availableWorkers.map((w) => (
+                    <option key={w.id} value={w.id}>
+                      {w.name} · {openLoad(w.id)} open job{openLoad(w.id) === 1 ? "" : "s"} ·{" "}
+                      {w.performance_score.toFixed(1)}★
+                    </option>
+                  ))}
+                </optgroup>
+              ) : null}
+              {offDutyWorkers.length > 0 ? (
+                <optgroup label="Off duty">
+                  {offDutyWorkers.map((w) => (
+                    <option key={w.id} value={w.id}>
+                      {w.name} · off duty · {openLoad(w.id)} open job
+                      {openLoad(w.id) === 1 ? "" : "s"}
+                    </option>
+                  ))}
+                </optgroup>
+              ) : null}
             </select>
+            {zoneWorkers.length === 0 ? (
+              <p className="mt-3 rounded-xl bg-muted p-3 text-xs text-muted-foreground">
+                No workers are listed for this ward yet.
+              </p>
+            ) : null}
             <button
               onClick={assign}
-              disabled={mutate.isPending}
+              disabled={mutate.isPending || zoneWorkers.length === 0}
               className="mt-3 h-11 w-full rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40"
             >
               {complaint.assigned_worker_id ? "Reassign complaint" : "Assign complaint"}
             </button>
           </div>
+
 
           <div className="card-surface p-5">
             <h2 className="font-display text-base font-semibold">Override priority</h2>
