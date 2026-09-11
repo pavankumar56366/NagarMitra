@@ -9,6 +9,7 @@ import { SlaChip } from "@/components/sla-chip";
 import { photoUrlQuery } from "@/lib/citizen";
 
 import { ReportQualityPanel } from "@/components/report-quality-panel";
+import { EvidencePhoto } from "@/components/evidence-photo";
 import {
   complaintEventsQuery,
   completionEvidenceQuery,
@@ -281,6 +282,13 @@ function ComplaintDetail() {
                     <p className="text-muted-foreground">
                       {formatDateTime(ev.captured_at)} · {ev.location_name}
                     </p>
+                    {ev.image_path ? (
+                      <EvidencePhoto
+                        className="mt-3"
+                        path={ev.image_path}
+                        label="After — completion photo"
+                      />
+                    ) : null}
                     {ev.validation_reason ? (
                       <p className="mt-1 text-muted-foreground">{ev.validation_reason}</p>
                     ) : null}

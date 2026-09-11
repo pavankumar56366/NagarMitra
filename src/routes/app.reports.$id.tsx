@@ -10,6 +10,7 @@ import { complaintEventsQuery, completionEvidenceQuery, workersQuery } from "@/l
 import { LocationFacts, ReportQualityPanel } from "@/components/report-quality-panel";
 import { StatusBadge, PriorityBadge } from "@/components/status-badge";
 import { SlaChip } from "@/components/sla-chip";
+import { EvidencePhoto } from "@/components/evidence-photo";
 import { CATEGORY_LABEL, formatDateTime } from "@/lib/waste";
 
 export const Route = createFileRoute("/app/reports/$id")({
@@ -104,6 +105,9 @@ function ReportDetail() {
     setNote("");
   }
 
+  const afterPhotoPath =
+    evidence.find((ev) => ev.gps_verified && ev.image_path)?.image_path ?? null;
+
   if (!complaint) {
     return (
       <div className="space-y-4">
@@ -135,7 +139,23 @@ function ReportDetail() {
         </div>
       </header>
 
-      {photo && <img src={photo} alt="Waste you reported" className="w-full rounded-2xl" />}
+      {photo && (
+        <div className={afterPhotoPath ? "grid gap-3 sm:grid-cols-2" : ""}>
+          <figure>
+            <img
+              src={photo}
+              alt="Waste you reported"
+              className="w-full rounded-2xl object-cover"
+            />
+            <figcaption className="mt-1.5 text-xs font-medium text-muted-foreground">
+              Before — your report
+            </figcaption>
+          </figure>
+          {afterPhotoPath && (
+            <EvidencePhoto path={afterPhotoPath} label="After — cleaned by the crew" />
+          )}
+        </div>
+      )}
 
       <div className="card-surface space-y-2 p-5 text-sm">
         <p className="flex items-center gap-2 text-muted-foreground">
