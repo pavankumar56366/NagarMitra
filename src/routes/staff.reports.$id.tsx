@@ -331,6 +331,9 @@ function WorkerJobCard() {
                 reported location
               </p>
               <p>{ev.location_name}</p>
+              {ev.image_path && (
+                <EvidencePhoto path={ev.image_path} label="After — completion photo" />
+              )}
               {ev.validation_reason && (
                 <p className="text-muted-foreground">{ev.validation_reason}</p>
               )}

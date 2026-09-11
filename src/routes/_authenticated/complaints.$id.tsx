@@ -281,6 +281,13 @@ function ComplaintDetail() {
                     <p className="text-muted-foreground">
                       {formatDateTime(ev.captured_at)} · {ev.location_name}
                     </p>
+                    {ev.image_path ? (
+                      <EvidencePhoto
+                        className="mt-3"
+                        path={ev.image_path}
+                        label="After — completion photo"
+                      />
+                    ) : null}
                     {ev.validation_reason ? (
                       <p className="mt-1 text-muted-foreground">{ev.validation_reason}</p>
                     ) : null}
