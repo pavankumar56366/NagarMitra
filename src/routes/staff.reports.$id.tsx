@@ -15,6 +15,7 @@ import {
 import { StatusBadge, PriorityBadge } from "@/components/status-badge";
 import { SlaChip } from "@/components/sla-chip";
 import { CameraCapture } from "@/components/camera-capture";
+import { EvidencePhoto } from "@/components/evidence-photo";
 import { LocationFacts, ReportQualityPanel } from "@/components/report-quality-panel";
 import { submitWorkerCompletion } from "@/lib/worker-completion.functions";
 import { CATEGORY_LABEL, formatDateTime } from "@/lib/waste";

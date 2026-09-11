@@ -10,6 +10,7 @@ import { complaintEventsQuery, completionEvidenceQuery, workersQuery } from "@/l
 import { LocationFacts, ReportQualityPanel } from "@/components/report-quality-panel";
 import { StatusBadge, PriorityBadge } from "@/components/status-badge";
 import { SlaChip } from "@/components/sla-chip";
+import { EvidencePhoto } from "@/components/evidence-photo";
 import { CATEGORY_LABEL, formatDateTime } from "@/lib/waste";
 
 export const Route = createFileRoute("/app/reports/$id")({

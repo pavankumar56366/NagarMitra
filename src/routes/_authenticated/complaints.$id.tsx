@@ -9,6 +9,7 @@ import { SlaChip } from "@/components/sla-chip";
 import { photoUrlQuery } from "@/lib/citizen";
 
 import { ReportQualityPanel } from "@/components/report-quality-panel";
+import { EvidencePhoto } from "@/components/evidence-photo";
 import {
   complaintEventsQuery,
   completionEvidenceQuery,
