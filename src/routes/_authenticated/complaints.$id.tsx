@@ -124,6 +124,15 @@ function ComplaintDetail() {
   const assigned = workers.find((w) => w.id === complaint.assigned_worker_id);
   const trail = escalations.filter((e) => e.complaint_id === id);
   const zoneWorkers = workers.filter((w) => !complaint.zone_id || w.zone_id === complaint.zone_id);
+  const openLoad = (workerId: string) =>
+    complaints.filter(
+      (c) =>
+        c.assigned_worker_id === workerId &&
+        ["assigned", "in_progress", "escalated", "reopened"].includes(c.status),
+    ).length;
+  const availableWorkers = zoneWorkers.filter((w) => w.availability === "on_duty");
+  const offDutyWorkers = zoneWorkers.filter((w) => w.availability !== "on_duty");
+
 
   function assign() {
     if (!workerId) {
