@@ -146,7 +146,7 @@ function ComplaintsPage() {
 
       <div className="card-surface overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[900px] text-left text-sm">
+          <table className="w-full min-w-[980px] text-left text-sm">
             <thead className="bg-muted text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-semibold">Reference</th>
@@ -157,11 +157,12 @@ function ComplaintsPage() {
                 <th className="px-4 py-3 font-semibold">Worker</th>
                 <th className="px-4 py-3 font-semibold">SLA</th>
                 <th className="px-4 py-3 font-semibold">Age</th>
+                <th className="px-4 py-3 font-semibold">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {rows.map((c) => (
-                <tr key={c.id} className="transition-colors hover:bg-accent">
+                <tr key={c.id} className="cursor-pointer transition-colors hover:bg-accent">
                   <td className="px-4 py-3">
                     <Link
                       to="/complaints/$id"
@@ -172,8 +173,10 @@ function ComplaintsPage() {
                     </Link>
                   </td>
                   <td className="max-w-[260px] px-4 py-3">
-                    <p className="truncate font-medium">{c.address}</p>
-                    <p className="text-xs text-muted-foreground">{zoneName(c.zone_id)}</p>
+                    <Link to="/complaints/$id" params={{ id: c.id }} className="block">
+                      <p className="truncate font-medium">{c.address}</p>
+                      <p className="text-xs text-muted-foreground">{zoneName(c.zone_id)}</p>
+                    </Link>
                   </td>
                   <td className="px-4 py-3 text-xs">{CATEGORY_LABEL[c.waste_category]}</td>
                   <td className="px-4 py-3">
@@ -189,11 +192,21 @@ function ComplaintsPage() {
                   <td className="px-4 py-3 text-xs text-muted-foreground">
                     {relativeTime(c.created_at)}
                   </td>
+                  <td className="px-4 py-3">
+                    <Link
+                      to="/complaints/$id"
+                      params={{ id: c.id }}
+                      className="inline-flex h-9 items-center rounded-[10px] bg-primary px-3 text-xs font-semibold text-primary-foreground"
+                    >
+                      {c.assigned_worker_id ? "View / reassign" : "View & assign worker"}
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
 
         {!isLoading && rows.length === 0 ? (
           <div className="px-5 py-12 text-center">
