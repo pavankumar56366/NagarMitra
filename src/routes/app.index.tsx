@@ -6,6 +6,7 @@ import { avatarUrlQuery, myAccessQuery } from "@/lib/queries";
 import { StatusBadge } from "@/components/status-badge";
 import { isOpen, relativeTime } from "@/lib/waste";
 import { useI18n } from "@/lib/i18n";
+import { ScoreCard, useMyScore } from "@/components/score-panel";
 import logoAsset from "@/assets/nagarmitra-logo.jpg.asset.json";
 
 export const Route = createFileRoute("/app/")({
@@ -43,8 +44,13 @@ function CitizenHome() {
   const { data: complaints = [] } = useQuery(myComplaintsQuery);
 
 
+  const score = useMyScore();
+
   const active = complaints.filter((c) => isOpen(c.status)).length;
   const done = complaints.length - active;
+  const resolvedCount = complaints.filter(
+    (c) => c.status === "resolved" || c.status === "verified" || c.status === "closed",
+  ).length;
   const recent = complaints.slice(0, 3);
 
   return (
@@ -98,6 +104,15 @@ function CitizenHome() {
         </span>
         <ChevronRight className="h-5 w-5 text-muted-foreground" />
       </Link>
+
+      <ScoreCard
+        title="Civic score"
+        points={score.points}
+        stats={[
+          { label: "Reports submitted", value: complaints.length },
+          { label: "Problems resolved", value: resolvedCount },
+        ]}
+      />
 
       <div className="grid grid-cols-2 gap-3">
         <div className="card-surface p-4">
