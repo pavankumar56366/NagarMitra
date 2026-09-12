@@ -66,5 +66,18 @@ export const verifyCitizenCleanup = createServerFn({ method: "POST" })
     });
     if (eventError) throw new Error(eventError.message);
 
+    if (data.confirmed) {
+      const { awardPoints } = await import("./scoring.server");
+      const { SCORE_POINTS } = await import("./scoring");
+      await awardPoints({
+        userId: context.userId,
+        role: "citizen",
+        complaintId: complaint.id,
+        kind: "report_resolved",
+        points: SCORE_POINTS.reportResolved,
+        reason: "Your report was resolved",
+      });
+    }
+
     return { status };
   });
