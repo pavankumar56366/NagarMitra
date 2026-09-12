@@ -424,6 +424,47 @@ export type Database = {
           },
         ]
       }
+      score_events: {
+        Row: {
+          complaint_id: string | null
+          created_at: string
+          id: string
+          kind: string
+          points: number
+          reason: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          complaint_id?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          points: number
+          reason?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          complaint_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          points?: number
+          reason?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "score_events_complaint_id_fkey"
+            columns: ["complaint_id"]
+            isOneToOne: false
+            referencedRelation: "complaints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       segregation_results: {
         Row: {
           bounding_box_json: Json | null
