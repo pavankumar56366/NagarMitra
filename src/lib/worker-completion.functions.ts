@@ -42,7 +42,9 @@ export const submitWorkerCompletion = createServerFn({ method: "POST" })
     // The worker's own RLS view proves the job is assigned to them.
     const { data: complaint, error: readError } = await context.supabase
       .from("complaints")
-      .select("id,status,lat,lng,assigned_worker_id,assigned_worker_user_id,deleted_at")
+      .select(
+        "id,status,lat,lng,assigned_worker_id,assigned_worker_user_id,deleted_at,sla_start,sla_deadline",
+      )
       .eq("id", data.complaintId)
       .eq("assigned_worker_user_id", context.userId)
       .maybeSingle();
@@ -56,6 +58,8 @@ export const submitWorkerCompletion = createServerFn({ method: "POST" })
       lng: number;
       assigned_worker_id: string | null;
       deleted_at: string | null;
+      sla_start: string | null;
+      sla_deadline: string | null;
     };
     if (row.deleted_at || row.status === "cancelled")
       throw new Error("This report was withdrawn, so no completion can be recorded.");
