@@ -84,6 +84,8 @@ function ProfilePage() {
         </div>
       </div>
 
+      <ScoreHistory />
+
       <button
         onClick={async () => {
           await supabase.auth.signOut();
