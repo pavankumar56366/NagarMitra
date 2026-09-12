@@ -166,6 +166,8 @@ function WorkerShift() {
           </ul>
         </section>
       )}
+
+      <ScoreHistory />
     </div>
   );
 }

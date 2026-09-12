@@ -9,6 +9,7 @@ import { AvatarUpload } from "@/components/avatar-upload";
 import { isOpen } from "@/lib/waste";
 import { useI18n } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { ScoreCard, ScoreHistory, useMyScore } from "@/components/score-panel";
 
 export const Route = createFileRoute("/app/profile")({
   ssr: false,
@@ -34,7 +35,11 @@ function ProfilePage() {
   const { data: me } = useQuery(myAccessQuery);
   const { data: complaints = [] } = useQuery(myComplaintsQuery);
 
+  const score = useMyScore();
   const active = complaints.filter((c) => isOpen(c.status)).length;
+  const resolved = complaints.filter(
+    (c) => c.status === "resolved" || c.status === "verified" || c.status === "closed",
+  ).length;
 
   return (
     <div className="space-y-5">
@@ -54,6 +59,15 @@ function ProfilePage() {
         </div>
       </div>
 
+
+      <ScoreCard
+        title="Civic score"
+        points={score.points}
+        stats={[
+          { label: "Reports submitted", value: complaints.length },
+          { label: "Problems resolved", value: resolved },
+        ]}
+      />
 
       <div className="grid grid-cols-3 gap-3 text-center">
         <div className="card-surface p-4">
