@@ -418,6 +418,20 @@ export const submitCitizenReport = createServerFn({ method: "POST" })
     const { error: eventError } = await supabaseAdmin.from("complaint_events").insert(events);
     if (eventError) throw new Error(eventError.message);
 
+    // Points only for a genuine, non-duplicate report.
+    if (!underReview && duplicate.status === "UNIQUE") {
+      const { awardPoints } = await import("./scoring.server");
+      const { SCORE_POINTS } = await import("./scoring");
+      await awardPoints({
+        userId: context.userId,
+        role: "citizen",
+        complaintId: complaint.id,
+        kind: "report_submitted",
+        points: SCORE_POINTS.report,
+        reason: "Genuine waste report",
+      });
+    }
+
     return {
       outcome: "created",
       complaintId: complaint.id,

@@ -42,7 +42,9 @@ export const submitWorkerCompletion = createServerFn({ method: "POST" })
     // The worker's own RLS view proves the job is assigned to them.
     const { data: complaint, error: readError } = await context.supabase
       .from("complaints")
-      .select("id,status,lat,lng,assigned_worker_id,assigned_worker_user_id,deleted_at")
+      .select(
+        "id,status,lat,lng,assigned_worker_id,assigned_worker_user_id,deleted_at,sla_start,sla_deadline",
+      )
       .eq("id", data.complaintId)
       .eq("assigned_worker_user_id", context.userId)
       .maybeSingle();
@@ -56,6 +58,8 @@ export const submitWorkerCompletion = createServerFn({ method: "POST" })
       lng: number;
       assigned_worker_id: string | null;
       deleted_at: string | null;
+      sla_start: string | null;
+      sla_deadline: string | null;
     };
     if (row.deleted_at || row.status === "cancelled")
       throw new Error("This report was withdrawn, so no completion can be recorded.");
@@ -136,9 +140,10 @@ export const submitWorkerCompletion = createServerFn({ method: "POST" })
       };
     }
 
+    const completedAt = new Date();
     const { error: updateError } = await supabaseAdmin
       .from("complaints")
-      .update({ status: "resolved", resolved_at: new Date().toISOString() } as never)
+      .update({ status: "resolved", resolved_at: completedAt.toISOString() } as never)
       .eq("id", row.id)
       .eq("assigned_worker_user_id", context.userId);
     if (updateError) throw new Error(updateError.message);
@@ -152,6 +157,19 @@ export const submitWorkerCompletion = createServerFn({ method: "POST" })
       )} m from the reported location at ${locationName}. AI check: ${ai.reason}`,
     });
     if (eventError) throw new Error(eventError.message);
+
+    // Speed-based points, only once the job is genuinely completed.
+    const { workCompletionAward } = await import("./scoring");
+    const { awardPoints } = await import("./scoring.server");
+    const award = workCompletionAward(row.sla_start, row.sla_deadline, completedAt);
+    await awardPoints({
+      userId: context.userId,
+      role: "worker",
+      complaintId: row.id,
+      kind: award.kind,
+      points: award.points,
+      reason: award.reason,
+    });
 
     return {
       outcome: "completed",

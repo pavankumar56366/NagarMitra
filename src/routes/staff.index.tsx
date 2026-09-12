@@ -6,6 +6,7 @@ import { StatusBadge, PriorityBadge } from "@/components/status-badge";
 import { SlaChip } from "@/components/sla-chip";
 import { DutyToggle } from "@/components/duty-toggle";
 import { CATEGORY_LABEL, PRIORITY_ORDER, isOpen, relativeTime, slaState } from "@/lib/waste";
+import { ScoreCard, ScoreHistory, useMyScore } from "@/components/score-panel";
 
 export const Route = createFileRoute("/staff/")({
   ssr: false,
@@ -33,6 +34,7 @@ function WorkerShift() {
   const { data: worker } = useQuery(myWorkerQuery);
   const { data: complaints = [] } = useQuery(complaintsQuery);
   const { data: zones = [] } = useQuery(zonesQuery);
+  const score = useMyScore();
 
   const open = complaints.filter((c) => isOpen(c.status));
   const breached = open.filter((c) => slaState(c.sla_start, c.sla_deadline)?.breached);
@@ -59,6 +61,15 @@ function WorkerShift() {
         </p>
         <DutyToggle />
       </section>
+
+      <ScoreCard
+        title="Performance score"
+        points={score.points}
+        stats={[
+          { label: "Complaints completed", value: score.completedJobs },
+          { label: "Done today", value: doneToday.length },
+        ]}
+      />
 
       <div className="grid grid-cols-3 gap-2 text-center">
         <div className="card-surface p-3">
@@ -155,6 +166,8 @@ function WorkerShift() {
           </ul>
         </section>
       )}
+
+      <ScoreHistory />
     </div>
   );
 }
